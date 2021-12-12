@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "teaTime",
-    "slug": "teaTime",
+    "name": "rn-expo-template",
+    "slug": "rn-expo-template",
     "version": "1.0.0",
     "orientation": "portrait",
+    "entryPoint": "/src/App.tsx",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
