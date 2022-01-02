@@ -3,7 +3,7 @@ import { ThunkResult } from '../store';
 import { Tea, TeaData } from './Tea';
 import { addTea as addTeaAction, editTea as editTeaAction, setTeas } from './tea.slice';
 
-export const getTeas =
+export const fetchTeas =
   (): ThunkResult<Promise<void>> =>
   async (dispatch, getState, { teaGateway }) => {
     try {
@@ -26,9 +26,9 @@ export const addTea =
         archived: false,
       };
 
-      const createdTea = await teaGateway.createTea(tea);
+      await teaGateway.saveTea(tea);
 
-      dispatch(addTeaAction(createdTea));
+      dispatch(addTeaAction(tea));
     } catch (e) {
       console.error(e);
     }
@@ -38,9 +38,9 @@ export const editTea =
   (tea: Tea): ThunkResult<Promise<void>> =>
   async (dispatch, getState, { teaGateway }) => {
     try {
-      const editedTea: Tea = await teaGateway.editTea(tea);
+      await teaGateway.saveTea(tea);
 
-      dispatch(editTeaAction(editedTea));
+      dispatch(editTeaAction(tea));
     } catch (e) {
       console.error(e);
     }

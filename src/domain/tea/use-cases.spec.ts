@@ -1,8 +1,8 @@
 import { Store } from '../tests/store';
 
 import { createTea, createTeas, Tea, TeaData } from './Tea';
-import { setTeas } from './tea.slice';
-import { addTea, editTea, getTeas } from './use-cases';
+import { selectTeas, setTeas } from './tea.slice';
+import { addTea, editTea, fetchTeas } from './use-cases';
 
 describe('getTeas', () => {
   let store: Store;
@@ -16,11 +16,9 @@ describe('getTeas', () => {
 
     store.teaGateway.teas = teas;
 
-    await store.dispatch(getTeas());
+    await store.dispatch(fetchTeas());
 
-    const state = store.getState();
-
-    expect(state.teas.teas).toMatchObject(teas);
+    expect(store.select(selectTeas)).toEqual(teas);
   });
 
   it('creates a tea', async () => {
@@ -33,10 +31,13 @@ describe('getTeas', () => {
 
     await store.dispatch(addTea(tea));
 
-    const state = store.getState();
-
-    const createdTea = createTea(tea);
-    expect(state.teas.teas).toMatchObject([createdTea]);
+    const createdTea = {
+      ...tea,
+      id: 'tea-1',
+      archived: false,
+      count: 0,
+    };
+    expect(store.select(selectTeas)).toEqual([createdTea]);
   });
 
   it('edit a tea', async () => {
@@ -47,8 +48,6 @@ describe('getTeas', () => {
 
     await store.dispatch(editTea(editedTea));
 
-    const state = store.getState();
-
-    expect(state.teas.teas).toMatchObject([editedTea]);
+    expect(store.select(selectTeas)).toMatchObject([editedTea]);
   });
 });

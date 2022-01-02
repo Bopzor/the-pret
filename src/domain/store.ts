@@ -26,7 +26,7 @@ const store = createStore<Dependencies>({
   idGateway: {},
   teaGateway: {},
   timerGateway: {},
-});
+} as Dependencies);
 
 export type Dependencies = {
   idGateway: IdGateway;
@@ -37,6 +37,7 @@ export type Dependencies = {
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppStore = typeof store;
+export type AppSelector<Result> = (state: RootState) => Result;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, Dependencies, ReduxAction>;
 

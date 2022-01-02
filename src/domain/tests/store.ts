@@ -1,4 +1,4 @@
-import { createStore } from '../store';
+import { AppSelector, createStore } from '../store';
 
 import { FakeTimerGateway } from './FakeTimerGateway';
 import { ImMemoryIdGateway } from './InMemoryIdGateway';
@@ -22,6 +22,10 @@ export class Store {
   getState = this.store.getState;
 
   dispatch = this.store.dispatch;
+
+  select<T>(selector: AppSelector<T>): T {
+    return selector(this.getState());
+  }
 
   get teaGateway() {
     return this.deps.teaGateway;

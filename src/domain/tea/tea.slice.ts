@@ -1,43 +1,39 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { AppSelector } from '../store';
+
 import { Tea } from './Tea';
 
-type TeaState = {
-  teas: Tea[];
-};
+type TeaState = Tea[];
 
-const initialState = {
-  teas: [],
-} as TeaState;
+const initialState: TeaState = [];
 
 const teaSlice = createSlice({
   name: 'tea',
   initialState,
   reducers: {
-    setTeas: (state, { payload }: PayloadAction<Tea[]>) => {
-      state.teas = payload;
+    setTeas: (_, { payload }: PayloadAction<Tea[]>) => {
+      return payload;
     },
     addTea: (state, { payload }: PayloadAction<Tea>) => {
-      state.teas.push(payload);
+      state.push(payload);
     },
     editTea: (state, { payload }: PayloadAction<Tea>) => {
-      const idx = state.teas.findIndex(({ id }) => id === payload.id);
+      const idx = state.findIndex(({ id }) => id === payload.id);
 
       if (idx < 0) {
         throw new Error(`Tea ${payload.name} with id ${payload.id} not found`);
       }
 
-      // prettier-ignore
-      state.teas = [
-        ...state.teas.slice(0, idx),
-        payload,
-        ...state.teas.slice(idx + 1),
-      ];
+      state[idx] = payload;
     },
   },
 });
 
 export const { setTeas, addTea, editTea } = teaSlice.actions;
+
+export const selectTeas: AppSelector<TeaState> = (state) => state.teas;
+
 export type TeaAction = typeof setTeas;
 
 export default teaSlice.reducer;

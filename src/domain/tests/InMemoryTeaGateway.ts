@@ -12,11 +12,7 @@ export class ImMemoryTeaGateway implements TeaGateway {
     return this._teas;
   }
 
-  async createTea(tea: Tea): Promise<Tea> {
-    return createTea(tea);
-  }
-
-  async editTea(tea: Tea): Promise<Tea> {
-    return tea;
+  async saveTea(tea: Tea): Promise<void> {
+    createTea(tea);
   }
 }
