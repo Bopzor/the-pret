@@ -1,15 +1,18 @@
 import { createStore } from '../store';
 
 import { FakeTimerGateway } from './FakeTimerGateway';
+import { ImMemoryIdGateway } from './InMemoryIdGateway';
 import { ImMemoryTeaGateway } from './InMemoryTeaGateway';
 
 type InMemoryDependencies = {
+  idGateway: ImMemoryIdGateway;
   teaGateway: ImMemoryTeaGateway;
   timerGateway: FakeTimerGateway;
 };
 
 export class Store {
   deps: InMemoryDependencies = {
+    idGateway: new ImMemoryIdGateway(),
     teaGateway: new ImMemoryTeaGateway(),
     timerGateway: new FakeTimerGateway(),
   };

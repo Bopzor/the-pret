@@ -12,6 +12,8 @@ export type Tea = {
   archived: boolean;
 };
 
+export type TeaData = Omit<Tea, 'id' | 'archived' | 'count'>;
+
 export const createTea = (overrides: Partial<Tea> = {}): Tea => ({
   id: 'tea-1',
   name: 'Tea name',

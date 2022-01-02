@@ -1,4 +1,4 @@
-import { Tea } from '../tea/Tea';
+import { createTea, Tea } from '../tea/Tea';
 import { TeaGateway } from '../tea/TeaGateway';
 
 export class ImMemoryTeaGateway implements TeaGateway {
@@ -10,5 +10,13 @@ export class ImMemoryTeaGateway implements TeaGateway {
 
   async getTeas(): Promise<Tea[]> {
     return this._teas;
+  }
+
+  async createTea(tea: Tea): Promise<Tea> {
+    return createTea(tea);
+  }
+
+  async editTea(tea: Tea): Promise<Tea> {
+    return tea;
   }
 }
