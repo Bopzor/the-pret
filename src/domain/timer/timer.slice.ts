@@ -36,6 +36,9 @@ const timerSlice = createSlice({
 
 export const { startTimer, stopTimer, setDuration, setRemainingTime } = timerSlice.actions;
 
-export const selectIsStarted = (state: RootState) => state.timer.startedAt !== null;
+export const selectStartedAt = (state: RootState) => state.timer.startedAt;
+export const selectIsStarted = (state: RootState) => selectStartedAt(state) !== null;
+export const selectDuration = (state: RootState) => state.timer.duration;
+export const selectRemainingTime = (state: RootState) => state.timer.remainingTime;
 
 export default timerSlice.reducer;

@@ -1,4 +1,5 @@
 import { TimerGateway } from '../timer/TimerGateway';
+import { Seconds } from '../types';
 
 export class FakeTimerGateway implements TimerGateway {
   timer?: () => unknown;
@@ -7,17 +8,16 @@ export class FakeTimerGateway implements TimerGateway {
     return current;
   }
 
-  getRemainingTime(startedAt: number, duration: number): number {
-    const now = this.now();
-    const passed = now - startedAt;
-
-    const remaining = duration - passed;
-
-    return remaining > 0 ? remaining : 0;
-  }
-
   async start(callback: () => unknown, _ms: number) {
     this.timer = callback;
+  }
+
+  pause() {
+    return;
+  }
+
+  async resume(_remainingTime: Seconds) {
+    return;
   }
 
   end() {
