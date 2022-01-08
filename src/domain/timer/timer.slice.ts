@@ -4,41 +4,63 @@ import { RootState } from '../store';
 import { Seconds } from '../types';
 
 type TimerState = {
-  startedAt: number | null;
+  started: boolean;
   duration: Seconds;
-  remainingTime: Seconds | null;
+  remainingTime: Seconds;
+  intervalId: number | null;
 };
 
-const initialState = {
-  startedAt: null,
+const initialState: TimerState = {
+  started: false,
   duration: 0,
-  remainingTime: null,
-} as TimerState;
+  remainingTime: 0,
+  intervalId: null,
+};
 
 const timerSlice = createSlice({
   name: 'timer',
   initialState,
   reducers: {
-    startTimer: (state, action: PayloadAction<number>) => {
-      state.startedAt = action.payload;
+    startTimer: (state, { payload: intervalId }: PayloadAction<number>) => {
+      state.started = true;
+      state.intervalId = intervalId;
+    },
+    pauseTimer: (state) => {
+      state.intervalId = null;
     },
     stopTimer: (state) => {
-      state.startedAt = null;
+      state.started = false;
+      state.intervalId = null;
     },
     setDuration: (state, action: PayloadAction<Seconds>) => {
       state.duration = action.payload;
     },
-    setRemainingTime: (state, action: PayloadAction<Seconds>) => {
-      state.remainingTime = action.payload;
+    setRemainingTime: (state, { payload: remainingTime }: PayloadAction<Seconds>) => {
+      state.remainingTime = remainingTime;
+    },
+    decreaseRemainingTime: (state) => {
+      --state.remainingTime;
+    },
+    setIntervalId: (state, { payload: intervalId }: PayloadAction<number>) => {
+      state.intervalId = intervalId;
     },
   },
 });
 
-export const { startTimer, stopTimer, setDuration, setRemainingTime } = timerSlice.actions;
+export const {
+  startTimer,
+  stopTimer,
+  setDuration,
+  setRemainingTime,
+  pauseTimer,
+  decreaseRemainingTime,
+  setIntervalId,
+} = timerSlice.actions;
 
-export const selectStartedAt = (state: RootState) => state.timer.startedAt;
-export const selectIsStarted = (state: RootState) => selectStartedAt(state) !== null;
+export const selectIsStarted = (state: RootState) => state.timer.started;
+export const selectIsPaused = (state: RootState) => state.timer.started && state.timer.intervalId === null;
 export const selectDuration = (state: RootState) => state.timer.duration;
 export const selectRemainingTime = (state: RootState) => state.timer.remainingTime;
+export const selectIntervalId = (state: RootState) => state.timer.intervalId;
 
 export default timerSlice.reducer;

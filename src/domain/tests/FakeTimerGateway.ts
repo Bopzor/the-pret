@@ -2,29 +2,36 @@ import { TimerGateway } from '../timer/TimerGateway';
 import { Seconds } from '../types';
 
 export class FakeTimerGateway implements TimerGateway {
-  timer?: () => unknown;
+  intervalId: number | null = null;
+  callback: (() => void) | null = null;
 
   now(current = 0) {
     return current;
   }
 
-  async start(callback: () => unknown, _ms: number) {
-    this.timer = callback;
+  startInterval(decreaseRemainingTime: () => void, _interval: Seconds) {
+    this.intervalId = 1;
+    this.callback = decreaseRemainingTime;
+
+    return this.intervalId;
   }
 
-  pause() {
-    return;
+  pauseInterval(_intervalId: number) {
+    this.intervalId = null;
   }
 
-  async resume(_remainingTime: Seconds) {
-    return;
+  resume() {
+    this.intervalId = 2;
+
+    return this.intervalId;
   }
 
-  end() {
-    const result = this.timer?.();
+  stopInterval(_intervalId: number) {
+    this.intervalId = null;
+    this.callback = null;
+  }
 
-    this.timer = undefined;
-
-    return result;
+  runInterval() {
+    this.callback?.();
   }
 }

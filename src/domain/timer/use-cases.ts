@@ -1,28 +1,22 @@
 import { ThunkResult } from '../store';
 
 import {
-  selectDuration,
+  decreaseRemainingTime,
+  pauseTimer as pauseTimerAction,
+  selectIntervalId,
   selectIsStarted,
-  selectRemainingTime,
-  selectStartedAt,
-  setDuration,
-  setRemainingTime,
+  setIntervalId,
   startTimer,
-  stopTimer,
+  stopTimer as stopTimerAction,
 } from './timer.slice';
 
 export const runTimer =
-  (callback: () => unknown): ThunkResult<Promise<void>> =>
+  (): ThunkResult<Promise<void>> =>
   async (dispatch, getState, { timerGateway }) => {
     try {
-      const duration = selectDuration(getState());
+      const intervalId = timerGateway.startInterval(() => dispatch(setDecreasedRemainingTime()), 1);
 
-      dispatch(startTimer(timerGateway.now()));
-
-      await timerGateway.start(callback, duration);
-
-      dispatch(setRemainingTime(0));
-      dispatch(stopTimer());
+      dispatch(startTimer(intervalId));
     } catch (e) {
       console.error(e);
     }
@@ -31,23 +25,14 @@ export const runTimer =
 export const pauseTimer =
   (): ThunkResult<void> =>
   (dispatch, getState, { timerGateway }) => {
-    const startedAt = selectStartedAt(getState());
+    const intervalId = selectIntervalId(getState());
 
-    if (startedAt === null) {
+    if (!intervalId) {
       throw new Error('No timer is started.');
     }
 
-    dispatch(getRemainingTime());
-    const remainingTime = selectRemainingTime(getState());
-
-    if (remainingTime === null) {
-      // TODO handle this correctly. The message should not be implementation oriented
-      throw new Error('Timer cannot be paused because remaining time is null.');
-    }
-
-    dispatch(setDuration(remainingTime));
-    dispatch(stopTimer());
-    timerGateway.pause();
+    timerGateway.pauseInterval(intervalId);
+    dispatch(pauseTimerAction());
   };
 
 export const resumeTimer =
@@ -59,27 +44,26 @@ export const resumeTimer =
       throw new Error('The timer is already running.');
     }
 
-    const duration = selectDuration(getState());
+    const intervalId = timerGateway.resume();
 
-    dispatch(startTimer(timerGateway.now()));
-    await timerGateway.resume(duration);
+    dispatch(setIntervalId(intervalId));
   };
 
-export const getRemainingTime =
+export const stopTimer =
   (): ThunkResult<void> =>
   (dispatch, getState, { timerGateway }) => {
-    const startedAt = selectStartedAt(getState());
+    const intervalId = selectIntervalId(getState());
 
-    if (startedAt === null) {
-      throw new Error('Timer is not started.');
+    if (!intervalId) {
+      throw new Error('No timer is started.');
     }
 
-    const duration = selectDuration(getState());
-    const passed = timerGateway.now() - startedAt;
-
-    const remaining = duration - passed;
-
-    const time = remaining > 0 ? remaining : 0;
-
-    dispatch(setRemainingTime(time));
+    timerGateway.stopInterval(intervalId);
+    dispatch(stopTimerAction());
   };
+
+export const setDecreasedRemainingTime = (): ThunkResult<void> => (dispatch, getState) => {
+  if (selectIsStarted(getState())) {
+    dispatch(decreaseRemainingTime());
+  }
+};
