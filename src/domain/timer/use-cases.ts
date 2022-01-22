@@ -12,7 +12,7 @@ import {
 
 export const runTimer =
   (): ThunkResult<Promise<void>> =>
-  async (dispatch, getState, { timerGateway }) => {
+  async (dispatch, _getState, { timerGateway }) => {
     try {
       const intervalId = timerGateway.startInterval(() => dispatch(setDecreasedRemainingTime()), 1);
 
