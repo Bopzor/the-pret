@@ -5,14 +5,12 @@ import { Seconds } from '../types';
 
 type TimerState = {
   started: boolean;
-  duration: Seconds;
   remainingTime: Seconds;
   intervalId: number | null;
 };
 
 const initialState: TimerState = {
   started: false,
-  duration: 0,
   remainingTime: 0,
   intervalId: null,
 };
@@ -32,9 +30,6 @@ const timerSlice = createSlice({
       state.started = false;
       state.intervalId = null;
     },
-    setDuration: (state, action: PayloadAction<Seconds>) => {
-      state.duration = action.payload;
-    },
     setRemainingTime: (state, { payload: remainingTime }: PayloadAction<Seconds>) => {
       state.remainingTime = remainingTime;
     },
@@ -47,19 +42,11 @@ const timerSlice = createSlice({
   },
 });
 
-export const {
-  startTimer,
-  stopTimer,
-  setDuration,
-  setRemainingTime,
-  pauseTimer,
-  decreaseRemainingTime,
-  setIntervalId,
-} = timerSlice.actions;
+export const { startTimer, stopTimer, setRemainingTime, pauseTimer, decreaseRemainingTime, setIntervalId } =
+  timerSlice.actions;
 
 export const selectIsStarted = (state: RootState) => state.timer.started;
 export const selectIsPaused = (state: RootState) => state.timer.started && state.timer.intervalId === null;
-export const selectDuration = (state: RootState) => state.timer.duration;
 export const selectRemainingTime = (state: RootState) => state.timer.remainingTime;
 export const selectIntervalId = (state: RootState) => state.timer.intervalId;
 

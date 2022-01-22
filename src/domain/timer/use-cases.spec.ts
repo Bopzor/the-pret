@@ -17,7 +17,6 @@ describe('runTimer', () => {
 
     expect(store.select(selectIsStarted)).toBe(true);
     expect(store.select(selectIntervalId)).toEqual(1);
-    expect(store.select(selectRemainingTime)).toEqual(200);
 
     store.timerGateway.runInterval();
     expect(store.select(selectRemainingTime)).toEqual(199);
