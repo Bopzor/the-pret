@@ -1,6 +1,10 @@
 import { ThunkResult } from '../../store';
+import { setRemainingTime } from '../../timer/timer.slice';
+import { runTimer } from '../../timer/use-cases';
 import { Tea, TeaData } from '../Tea';
-import { addTea as addTeaAction, editTea as editTeaAction, setTea, setTeas } from '../tea.slice';
+import { addTea as addTeaAction, editTea as editTeaAction, setTea, setTeas, setTimerId } from '../tea.slice';
+
+import { loadTeaTimer } from './tea-timer';
 
 export const fetchTeas =
   (): ThunkResult<Promise<void>> =>
@@ -25,6 +29,32 @@ export const fetchTea =
       }
 
       dispatch(setTea(tea));
+      dispatch(setRemainingTime(tea.time));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+export const loadTea =
+  ({ teaId }: { teaId: string }): ThunkResult<Promise<void>> =>
+  async (dispatch, _getState) => {
+    try {
+      await dispatch(fetchTea(teaId));
+
+      const timerId = await dispatch(loadTeaTimer());
+
+      if (!timerId) {
+        return;
+      }
+
+      dispatch(setTimerId(timerId));
+      // TODO: get end time of timer
+      // const time = teaGateway.getTimerTimeEnd(timerId)
+      // if (time >= teaGateway.now()) timer is over
+      dispatch(setRemainingTime(0));
+      // else calculate remaining time
+
+      await dispatch(runTimer());
     } catch (e) {
       console.error(e);
     }

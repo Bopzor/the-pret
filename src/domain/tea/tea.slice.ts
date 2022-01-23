@@ -7,7 +7,7 @@ import { Tea } from './Tea';
 type TeaState = {
   list: Tea[];
   tea: Tea | null;
-  timerId: number | null;
+  timerId: string | null;
 };
 
 const initialState: TeaState = {
@@ -38,7 +38,7 @@ const teaSlice = createSlice({
 
       state.list[idx] = payload;
     },
-    setTimerId: (state, { payload }: PayloadAction<number | null>) => {
+    setTimerId: (state, { payload }: PayloadAction<string | null>) => {
       state.timerId = payload;
     },
   },

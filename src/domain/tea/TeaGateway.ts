@@ -11,6 +11,8 @@ export interface TeaStoreGateway {
 }
 
 export interface TeaTimerGateway {
-  runTimer(duration: Seconds, onEnd?: () => void): number;
-  cancelTimer(timerId: number): void;
+  runTimer(duration: Seconds, onEnd?: () => void): Promise<string>;
+  cancelTimer(timerId: string): Promise<void>;
+  loadTimer(): Promise<string | null>;
+  saveTimer(id: string): Promise<void>;
 }

@@ -1,8 +1,9 @@
 import { Store } from '../../tests/store';
+import { selectRemainingTime } from '../../timer/timer.slice';
 import { createTea, createTeas, Tea, TeaData } from '../Tea';
-import { selectTea, selectTeas, setTeas } from '../tea.slice';
+import { selectTea, selectTeas, selectTimerId, setTeas } from '../tea.slice';
 
-import { addTea, editTea, fetchTea, fetchTeas } from './tea-use-cases';
+import { addTea, editTea, fetchTea, fetchTeas, loadTea } from './tea';
 
 describe('getTeas', () => {
   let store: Store;
@@ -37,6 +38,7 @@ describe('getTea', () => {
     await store.dispatch(fetchTea(tea.id));
 
     expect(store.select(selectTea)).toEqual(tea);
+    expect(store.select(selectRemainingTime)).toEqual(tea.time);
   });
 });
 
@@ -83,5 +85,25 @@ describe('editTea', () => {
     await store.dispatch(editTea(editedTea));
 
     expect(store.select(selectTeas)).toMatchObject([editedTea]);
+  });
+});
+
+describe('loadTea', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = new Store();
+  });
+
+  it('load the tea and its timer', async () => {
+    const tea = createTea();
+    store.teaGateway.teas = [tea];
+    store.teaGateway.timerId = '9';
+
+    await store.dispatch(loadTea({ teaId: tea.id }));
+
+    expect(store.select(selectTea)).toEqual(tea);
+    expect(store.select(selectRemainingTime)).toEqual(0);
+    expect(store.select(selectTimerId)).toEqual('9');
   });
 });

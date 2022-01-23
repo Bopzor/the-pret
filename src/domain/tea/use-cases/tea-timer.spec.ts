@@ -3,7 +3,7 @@ import { selectIsPaused, selectIsStarted, selectRemainingTime, startTimer } from
 import { createTea } from '../Tea';
 import { selectTimerId, setTea, setTimerId } from '../tea.slice';
 
-import { pauseTeaTimer, resumeTeaTimer, runTeaTimer, stopTeaTimer } from './tea-timer-use-cases';
+import { addTeaTimer, pauseTeaTimer, resumeTeaTimer, runTeaTimer, stopTeaTimer } from './tea-timer';
 
 describe('runTeaTimer', () => {
   let store: Store;
@@ -17,12 +17,12 @@ describe('runTeaTimer', () => {
 
     store.dispatch(setTea(tea));
 
-    store.dispatch(runTeaTimer());
+    await store.dispatch(runTeaTimer());
 
     expect(store.select(selectRemainingTime)).toEqual(tea.time);
     expect(store.select(selectIsStarted)).toEqual(true);
 
-    expect(store.select(selectTimerId)).toEqual(9);
+    expect(store.select(selectTimerId)).toEqual('9');
   });
 });
 
@@ -34,7 +34,7 @@ describe('pauseTeaTimer', () => {
   });
 
   it('pauses the tea timer', async () => {
-    store.dispatch(setTimerId(9));
+    store.dispatch(setTimerId('9'));
     store.dispatch(startTimer(1));
 
     store.dispatch(pauseTeaTimer());
@@ -52,9 +52,9 @@ describe('resumeTeaTimer', () => {
   });
 
   it('resumes the tea timer', async () => {
-    store.dispatch(resumeTeaTimer());
+    await store.dispatch(resumeTeaTimer());
 
-    expect(store.select(selectTimerId)).toEqual(9);
+    expect(store.select(selectTimerId)).toEqual('9');
   });
 });
 
@@ -66,12 +66,26 @@ describe('stopTeaTimer', () => {
   });
 
   it('stops the tea timer', async () => {
-    store.dispatch(setTimerId(9));
+    store.dispatch(setTimerId('9'));
     store.dispatch(startTimer(1));
 
     store.dispatch(stopTeaTimer());
 
     expect(store.select(selectTimerId)).toBeNull();
     expect(store.select(selectIsStarted)).toBe(false);
+  });
+});
+
+describe('addTeaTimer', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = new Store();
+  });
+
+  it('add a tea timer', async () => {
+    await store.dispatch(addTeaTimer('42'));
+
+    expect(store.select(selectTimerId)).toEqual('42');
   });
 });

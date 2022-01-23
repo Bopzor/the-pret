@@ -5,5 +5,4 @@ export interface TimerGateway {
   pauseInterval(intervalId: number): void;
   resume(): number;
   stopInterval(intervalId: number): void;
-  now(): Seconds;
 }

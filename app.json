@@ -4,7 +4,7 @@
     "slug": "teaTime",
     "version": "1.0.0",
     "orientation": "portrait",
-    "entryPoint": "/src/App.tsx",
+    "entryPoint": "/src/infrastructure/App.tsx",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -18,13 +18,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "tea.time"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "tea.time"
     },
     "web": {
       "favicon": "./assets/favicon.png"

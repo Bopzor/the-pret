@@ -3,7 +3,7 @@ import { TeaGateway } from '../tea/TeaGateway';
 
 export class ImMemoryTeaGateway implements TeaGateway {
   private _teas: Tea[] = [];
-  timerId: number | null = null;
+  timerId: string | null = null;
   callback: (() => void) | null = null;
 
   set teas(t: Tea[]) {
@@ -22,14 +22,22 @@ export class ImMemoryTeaGateway implements TeaGateway {
     createTea(tea);
   }
 
-  runTimer(_duration: number, onEnd?: () => void): number {
-    this.callback = onEnd ?? null;
-    this.timerId = 9;
+  async saveTimer(id: string): Promise<void> {
+    this.timerId = id;
+  }
 
+  async loadTimer(): Promise<string | null> {
     return this.timerId;
   }
 
-  cancelTimer(_timerId: number) {
+  async runTimer(_duration: number, onEnd?: () => void): Promise<string> {
+    this.callback = onEnd ?? null;
+    this.timerId = '9';
+
+    return new Promise((res) => res(this.timerId!.toString()));
+  }
+
+  async cancelTimer(_timerId: string) {
     this.timerId = null;
   }
 

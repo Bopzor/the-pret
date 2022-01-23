@@ -47,7 +47,14 @@ export const { startTimer, stopTimer, setRemainingTime, pauseTimer, decreaseRema
 
 export const selectIsStarted = (state: RootState) => state.timer.started;
 export const selectIsPaused = (state: RootState) => state.timer.started && state.timer.intervalId === null;
-export const selectRemainingTime = (state: RootState) => state.timer.remainingTime;
+export const selectRemainingTime = (state: RootState) =>
+  state.timer.remainingTime < 0 ? 0 : state.timer.remainingTime;
 export const selectIntervalId = (state: RootState) => state.timer.intervalId;
+export const selectIsFinished = (state: RootState) => {
+  const isStarted = selectIsStarted(state);
+  const remainingTime = selectRemainingTime(state);
+
+  return isStarted && remainingTime === 0;
+};
 
 export default timerSlice.reducer;

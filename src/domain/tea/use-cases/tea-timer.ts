@@ -7,13 +7,13 @@ import { selectTea, selectTimerId, setTimerId } from '../tea.slice';
 const startTeaTimer =
   (duration: Seconds): ThunkResult<Promise<void>> =>
   async (dispatch, _getState, { teaGateway }) => {
-    const timerId = teaGateway.runTimer(duration);
+    const timerId: string = await teaGateway.runTimer(duration, () => console.log(`timer ${timerId} ends`));
 
     dispatch(setTimerId(timerId));
   };
 
 const cancelTeaTimer =
-  (timerId: number): ThunkResult<Promise<void>> =>
+  (timerId: string): ThunkResult<Promise<void>> =>
   async (dispatch, _getState, { teaGateway }) => {
     teaGateway.cancelTimer(timerId);
 
@@ -59,7 +59,7 @@ export const resumeTeaTimer = (): ThunkResult<Promise<void>> => async (dispatch,
 
     dispatch(resumeTimer());
 
-    dispatch(startTeaTimer(remainingTime));
+    await dispatch(startTeaTimer(remainingTime));
   } catch (e) {
     console.error(e);
   }
@@ -80,3 +80,40 @@ export const stopTeaTimer = (): ThunkResult<Promise<void>> => async (dispatch, g
     console.error(e);
   }
 };
+
+export const addTeaTimer =
+  (id: string): ThunkResult<Promise<void>> =>
+  async (dispatch, getState, { teaGateway }) => {
+    try {
+      const timerId = selectTimerId(getState());
+
+      if (timerId && timerId !== id) {
+        throw new Error(`Timer "${timerId}" is already running.`);
+      }
+
+      await teaGateway.saveTimer(id);
+
+      dispatch(setTimerId(id));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+export const loadTeaTimer =
+  (): ThunkResult<Promise<string | null | undefined>> =>
+  async (dispatch, getState, { teaGateway }) => {
+    try {
+      const existingTimerId = selectTimerId(getState());
+      const timerId = await teaGateway.loadTimer();
+
+      if (existingTimerId && existingTimerId !== timerId) {
+        throw new Error(`Timer ${existingTimerId} is already running.`);
+      }
+
+      dispatch(setTimerId(timerId));
+
+      return timerId;
+    } catch (e) {
+      console.error(e);
+    }
+  };
