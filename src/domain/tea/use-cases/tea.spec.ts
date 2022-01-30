@@ -15,7 +15,7 @@ describe('getTeas', () => {
   it("gets the teas' list", async () => {
     const teas = createTeas();
 
-    store.teaGateway.teas = teas;
+    store.teaStoreGateway.teas = teas;
 
     await store.dispatch(fetchTeas());
 
@@ -33,7 +33,7 @@ describe('getTea', () => {
   it('gets the tea from the id', async () => {
     const tea = createTea();
 
-    store.teaGateway.teas = [tea];
+    store.teaStoreGateway.teas = [tea];
 
     await store.dispatch(fetchTea(tea.id));
 
@@ -97,8 +97,8 @@ describe('loadTea', () => {
 
   it('load the tea and its timer', async () => {
     const tea = createTea();
-    store.teaGateway.teas = [tea];
-    store.teaGateway.timerId = '9';
+    store.teaStoreGateway.teas = [tea];
+    store.teaTimerGateway.timerId = '9';
 
     await store.dispatch(loadTea({ teaId: tea.id }));
 

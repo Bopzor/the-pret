@@ -5,6 +5,7 @@ import {
   pauseTimer as pauseTimerAction,
   selectIntervalId,
   selectIsStarted,
+  selectRemainingTime,
   setIntervalId,
   startTimer,
   stopTimer as stopTimerAction,
@@ -63,7 +64,10 @@ export const stopTimer =
   };
 
 export const setDecreasedRemainingTime = (): ThunkResult<void> => (dispatch, getState) => {
-  if (selectIsStarted(getState())) {
+  const isStarted = selectIsStarted(getState());
+  const remainingTime = selectRemainingTime(getState());
+
+  if (isStarted && remainingTime > 0) {
     dispatch(decreaseRemainingTime());
   }
 };

@@ -52,6 +52,8 @@ describe('resumeTeaTimer', () => {
   });
 
   it('resumes the tea timer', async () => {
+    store.dispatch(setTea(createTea()));
+
     await store.dispatch(resumeTeaTimer());
 
     expect(store.select(selectTimerId)).toEqual('9');

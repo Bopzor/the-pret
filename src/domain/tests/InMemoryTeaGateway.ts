@@ -1,10 +1,9 @@
 import { createTea, Tea } from '../tea/Tea';
-import { TeaGateway } from '../tea/TeaGateway';
+import { TeaStoreGateway, TeaTimerGateway } from '../tea/TeaGateways';
+import { Seconds } from '../types';
 
-export class ImMemoryTeaGateway implements TeaGateway {
+export class InMemoryTeaStoreGateway implements TeaStoreGateway {
   private _teas: Tea[] = [];
-  timerId: string | null = null;
-  callback: (() => void) | null = null;
 
   set teas(t: Tea[]) {
     this._teas = t;
@@ -21,6 +20,10 @@ export class ImMemoryTeaGateway implements TeaGateway {
   async saveTea(tea: Tea): Promise<void> {
     createTea(tea);
   }
+}
+
+export class InMemoryTeaTimerGateway implements TeaTimerGateway {
+  timerId: string | null = null;
 
   async saveTimer(id: string): Promise<void> {
     this.timerId = id;
@@ -30,8 +33,7 @@ export class ImMemoryTeaGateway implements TeaGateway {
     return this.timerId;
   }
 
-  async runTimer(_duration: number, onEnd?: () => void): Promise<string> {
-    this.callback = onEnd ?? null;
+  async runTimer(_duration: Seconds, _teaId: string): Promise<string> {
     this.timerId = '9';
 
     return new Promise((res) => res(this.timerId!.toString()));
@@ -41,8 +43,11 @@ export class ImMemoryTeaGateway implements TeaGateway {
     this.timerId = null;
   }
 
-  endTimer() {
-    this.callback?.();
-    this.timerId = null;
+  listenForegroundTimer(_onReceivedNotification: (timerId: string, teaId: string) => void): () => void {
+    return () => undefined;
+  }
+
+  listenBackgroundTimer(_callback: (timerId: string, teaId: string) => void): () => void {
+    return () => undefined;
   }
 }

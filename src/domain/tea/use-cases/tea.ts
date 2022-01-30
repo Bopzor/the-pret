@@ -8,9 +8,9 @@ import { loadTeaTimer } from './tea-timer';
 
 export const fetchTeas =
   (): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { teaGateway }) => {
+  async (dispatch, _getState, { teaStoreGateway }) => {
     try {
-      const teas = await teaGateway.getTeas();
+      const teas = await teaStoreGateway.getTeas();
 
       dispatch(setTeas(teas));
     } catch (e) {
@@ -20,9 +20,9 @@ export const fetchTeas =
 
 export const fetchTea =
   (id: string): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { teaGateway }) => {
+  async (dispatch, _getState, { teaStoreGateway }) => {
     try {
-      const tea = await teaGateway.getTea(id);
+      const tea = await teaStoreGateway.getTea(id);
 
       if (!tea) {
         throw new Error('Tea with id ${id} not found.');
@@ -47,10 +47,10 @@ export const loadTea =
         return;
       }
 
-      dispatch(setTimerId(timerId));
+      // dispatch(setTimerId(timerId));
       // TODO: get end time of timer
-      // const time = teaGateway.getTimerTimeEnd(timerId)
-      // if (time >= teaGateway.now()) timer is over
+      // const time = teaStoreGateway.getTimerTimeEnd(timerId)
+      // if (time >= teaStoreGateway.now()) timer is over
       dispatch(setRemainingTime(0));
       // else calculate remaining time
 
@@ -62,7 +62,7 @@ export const loadTea =
 
 export const addTea =
   (teaData: TeaData): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { teaGateway, idGateway }) => {
+  async (dispatch, _getState, { teaStoreGateway, idGateway }) => {
     try {
       const tea: Tea = {
         ...teaData,
@@ -71,7 +71,7 @@ export const addTea =
         archived: false,
       };
 
-      await teaGateway.saveTea(tea);
+      await teaStoreGateway.saveTea(tea);
 
       dispatch(addTeaAction(tea));
     } catch (e) {
@@ -81,9 +81,9 @@ export const addTea =
 
 export const editTea =
   (tea: Tea): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { teaGateway }) => {
+  async (dispatch, _getState, { teaStoreGateway }) => {
     try {
-      await teaGateway.saveTea(tea);
+      await teaStoreGateway.saveTea(tea);
 
       dispatch(editTeaAction(tea));
     } catch (e) {

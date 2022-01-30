@@ -4,7 +4,7 @@ import { ThunkAction } from 'redux-thunk';
 
 import { IdGateway } from './IdGateway';
 import teaReducer from './tea/tea.slice';
-import { TeaGateway } from './tea/TeaGateway';
+import { TeaStoreGateway, TeaTimerGateway } from './tea/TeaGateways';
 import timerReducer from './timer/timer.slice';
 import { TimerGateway } from './timer/TimerGateway';
 
@@ -24,13 +24,15 @@ export const createStore = <Deps extends Dependencies>(dependencies: Deps) =>
 
 const store = createStore<Dependencies>({
   idGateway: {},
-  teaGateway: {},
+  teaStoreGateway: {},
+  teaTimerGateway: {},
   timerGateway: {},
 } as Dependencies);
 
 export type Dependencies = {
   idGateway: IdGateway;
-  teaGateway: TeaGateway;
+  teaStoreGateway: TeaStoreGateway;
+  teaTimerGateway: TeaTimerGateway;
   timerGateway: TimerGateway;
 };
 

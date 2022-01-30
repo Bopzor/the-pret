@@ -2,18 +2,20 @@ import { AppSelector, createStore } from '../store';
 
 import { FakeTimerGateway } from './FakeTimerGateway';
 import { ImMemoryIdGateway } from './InMemoryIdGateway';
-import { ImMemoryTeaGateway } from './InMemoryTeaGateway';
+import { InMemoryTeaStoreGateway, InMemoryTeaTimerGateway } from './InMemoryTeaGateway';
 
 type InMemoryDependencies = {
   idGateway: ImMemoryIdGateway;
-  teaGateway: ImMemoryTeaGateway;
+  teaStoreGateway: InMemoryTeaStoreGateway;
+  teaTimerGateway: InMemoryTeaTimerGateway;
   timerGateway: FakeTimerGateway;
 };
 
 export class Store {
   deps: InMemoryDependencies = {
     idGateway: new ImMemoryIdGateway(),
-    teaGateway: new ImMemoryTeaGateway(),
+    teaStoreGateway: new InMemoryTeaStoreGateway(),
+    teaTimerGateway: new InMemoryTeaTimerGateway(),
     timerGateway: new FakeTimerGateway(),
   };
 
@@ -27,8 +29,12 @@ export class Store {
     return selector(this.getState());
   }
 
-  get teaGateway() {
-    return this.deps.teaGateway;
+  get teaStoreGateway() {
+    return this.deps.teaStoreGateway;
+  }
+
+  get teaTimerGateway() {
+    return this.deps.teaTimerGateway;
   }
 
   get timerGateway() {

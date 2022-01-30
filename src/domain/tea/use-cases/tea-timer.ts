@@ -6,16 +6,23 @@ import { selectTea, selectTimerId, setTimerId } from '../tea.slice';
 
 const startTeaTimer =
   (duration: Seconds): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { teaGateway }) => {
-    const timerId: string = await teaGateway.runTimer(duration, () => console.log(`timer ${timerId} ends`));
+  async (dispatch, getState, { teaTimerGateway }) => {
+    // TODO: get this from url?
+    const tea = selectTea(getState());
+
+    if (!tea) {
+      throw new Error('No tea was found');
+    }
+
+    const timerId: string = await teaTimerGateway.runTimer(duration, tea.id);
 
     dispatch(setTimerId(timerId));
   };
 
 const cancelTeaTimer =
   (timerId: string): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { teaGateway }) => {
-    teaGateway.cancelTimer(timerId);
+  async (dispatch, _getState, { teaTimerGateway }) => {
+    teaTimerGateway.cancelTimer(timerId);
 
     dispatch(setTimerId(null));
   };
@@ -83,7 +90,7 @@ export const stopTeaTimer = (): ThunkResult<Promise<void>> => async (dispatch, g
 
 export const addTeaTimer =
   (id: string): ThunkResult<Promise<void>> =>
-  async (dispatch, getState, { teaGateway }) => {
+  async (dispatch, getState, { teaTimerGateway }) => {
     try {
       const timerId = selectTimerId(getState());
 
@@ -91,7 +98,7 @@ export const addTeaTimer =
         throw new Error(`Timer "${timerId}" is already running.`);
       }
 
-      await teaGateway.saveTimer(id);
+      await teaTimerGateway.saveTimer(id);
 
       dispatch(setTimerId(id));
     } catch (e) {
@@ -101,10 +108,10 @@ export const addTeaTimer =
 
 export const loadTeaTimer =
   (): ThunkResult<Promise<string | null | undefined>> =>
-  async (dispatch, getState, { teaGateway }) => {
+  async (dispatch, getState, { teaTimerGateway }) => {
     try {
       const existingTimerId = selectTimerId(getState());
-      const timerId = await teaGateway.loadTimer();
+      const timerId = await teaTimerGateway.loadTimer();
 
       if (existingTimerId && existingTimerId !== timerId) {
         throw new Error(`Timer ${existingTimerId} is already running.`);

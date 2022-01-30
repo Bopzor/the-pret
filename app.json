@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "teaTime",
-    "slug": "teaTime",
+    "name": "tea-time",
+    "slug": "tea-time",
     "version": "1.0.0",
     "orientation": "portrait",
     "entryPoint": "/src/infrastructure/App.tsx",
@@ -19,17 +19,27 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "tea.time"
+      "bundleIdentifier": "com.bopzor.rnexpotemplate"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "tea.time"
+      "package": "com.bopzor.rnexpotemplate"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            "assets/tea_time.mp3"
+          ]
+        }
+      ]
+    ]
   }
 }
