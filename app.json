@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "tea-time",
-    "slug": "tea-time",
+    "name": "Thé Prêt ?",
+    "slug": "the-pret",
     "version": "1.0.0",
     "orientation": "portrait",
-    "entryPoint": "/src/infrastructure/App.tsx",
+    "entryPoint": "index.js",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,14 +19,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.bopzor.rnexpotemplate"
+      "bundleIdentifier": "com.bopzor.thePret"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.bopzor.rnexpotemplate"
+      "package": "com.bopzor.thePret"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,7 +36,7 @@
         "expo-notifications",
         {
           "sounds": [
-            "assets/tea_time.mp3"
+            "assets/the_pret.mp3"
           ]
         }
       ]
