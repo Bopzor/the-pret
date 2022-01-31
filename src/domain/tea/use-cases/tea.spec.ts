@@ -1,7 +1,7 @@
 import { Store } from '../../tests/store';
 import { selectRemainingTime } from '../../timer/timer.slice';
 import { createTea, createTeas, Tea, TeaData } from '../Tea';
-import { selectTea, selectTeas, selectTimerId, setTeas } from '../tea.slice';
+import { selectTea, selectTeas, selectTimerId, setTeas, setTimerId } from '../tea.slice';
 
 import { addTea, editTea, fetchTea, fetchTeas, loadTea } from './tea';
 
@@ -98,7 +98,7 @@ describe('loadTea', () => {
   it('load the tea and its timer', async () => {
     const tea = createTea();
     store.teaStoreGateway.teas = [tea];
-    store.teaTimerGateway.timerId = '9';
+    store.dispatch(setTimerId('9'));
 
     await store.dispatch(loadTea({ teaId: tea.id }));
 

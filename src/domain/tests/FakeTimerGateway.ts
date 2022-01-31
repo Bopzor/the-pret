@@ -1,37 +1,42 @@
-import { TimerGateway } from '../timer/TimerGateway';
-import { Seconds } from '../types';
+import { IntervalParams, TimerGateway } from '../timer/TimerGateway';
 
 export class FakeTimerGateway implements TimerGateway {
   intervalId: number | null = null;
-  callback: (() => void) | null = null;
+  duration: number | null = null;
+  startTimestamp: number | null = null;
+  onTick: (() => void) | null = null;
+  onEnd: (() => void) | null = null;
 
-  now(current = 0) {
-    return current;
-  }
-
-  startInterval(decreaseRemainingTime: () => void, _interval: Seconds) {
+  start(params: IntervalParams) {
     this.intervalId = 1;
-    this.callback = decreaseRemainingTime;
+
+    this.startTimestamp = params.startTimestamp;
+    this.duration = params.duration;
+    this.onTick = params.onTick;
+    this.onEnd = params.onEnd;
 
     return this.intervalId;
   }
 
-  pauseInterval(_intervalId: number) {
+  pause(_intervalId: number) {
     this.intervalId = null;
   }
 
-  resume() {
-    this.intervalId = 2;
-
-    return this.intervalId;
-  }
-
-  stopInterval(_intervalId: number) {
+  clear(_intervalId: number) {
     this.intervalId = null;
-    this.callback = null;
+    this.onTick = null;
+    this.onEnd = null;
   }
 
-  runInterval() {
-    this.callback?.();
+  runInterval(now: number) {
+    if (!this.startTimestamp || !this.duration || !this.onTick || !this.onEnd) {
+      throw new Error('Not started');
+    }
+
+    if (this.startTimestamp + this.duration * 1000 >= now) {
+      this.onTick();
+    } else {
+      this.onEnd();
+    }
   }
 }

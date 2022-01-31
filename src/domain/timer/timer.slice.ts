@@ -5,13 +5,13 @@ import { Seconds } from '../types';
 
 type TimerState = {
   started: boolean;
-  remainingTime: Seconds;
+  remainingTime: Seconds | null;
   intervalId: number | null;
 };
 
 const initialState: TimerState = {
   started: false,
-  remainingTime: 0,
+  remainingTime: null,
   intervalId: null,
 };
 
@@ -34,9 +34,11 @@ const timerSlice = createSlice({
       state.remainingTime = remainingTime;
     },
     decreaseRemainingTime: (state) => {
-      --state.remainingTime;
+      if (state.remainingTime) {
+        --state.remainingTime;
+      }
     },
-    setIntervalId: (state, { payload: intervalId }: PayloadAction<number>) => {
+    setIntervalId: (state, { payload: intervalId }: PayloadAction<number | null>) => {
       state.intervalId = intervalId;
     },
   },
@@ -47,8 +49,15 @@ export const { startTimer, stopTimer, setRemainingTime, pauseTimer, decreaseRema
 
 export const selectIsStarted = (state: RootState) => state.timer.started;
 export const selectIsPaused = (state: RootState) => state.timer.started && state.timer.intervalId === null;
-export const selectRemainingTime = (state: RootState) =>
-  state.timer.remainingTime < 0 ? 0 : state.timer.remainingTime;
+export const selectRemainingTime = (state: RootState) => {
+  const remainingTime = state.timer.remainingTime;
+
+  if (!remainingTime) {
+    return remainingTime;
+  }
+
+  return remainingTime < 0 ? 0 : remainingTime;
+};
 export const selectIntervalId = (state: RootState) => state.timer.intervalId;
 export const selectIsFinished = (state: RootState) => {
   const isStarted = selectIsStarted(state);

@@ -4,7 +4,6 @@ import {
   decreaseRemainingTime,
   pauseTimer as pauseTimerAction,
   selectIntervalId,
-  selectIsStarted,
   selectRemainingTime,
   setIntervalId,
   startTimer,
@@ -13,9 +12,22 @@ import {
 
 export const runTimer =
   (): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState, { timerGateway }) => {
+  async (dispatch, getState, { timerGateway }) => {
     try {
-      const intervalId = timerGateway.startInterval(() => dispatch(setDecreasedRemainingTime()), 1);
+      const duration = selectRemainingTime(getState()) ?? 0;
+
+      const onTick = () => dispatch(setDecreasedRemainingTime());
+      const onEnd = () => {
+        dispatch(setIntervalId(null));
+        timerGateway.clear(intervalId);
+      };
+
+      const intervalId = timerGateway.start({
+        startTimestamp: Date.now(),
+        duration,
+        onTick,
+        onEnd,
+      });
 
       dispatch(startTimer(intervalId));
     } catch (e) {
@@ -29,25 +41,11 @@ export const pauseTimer =
     const intervalId = selectIntervalId(getState());
 
     if (!intervalId) {
-      throw new Error('No timer is started.');
+      throw new Error('pauseTimer: No timer is started.');
     }
 
-    timerGateway.pauseInterval(intervalId);
+    timerGateway.pause(intervalId);
     dispatch(pauseTimerAction());
-  };
-
-export const resumeTimer =
-  (): ThunkResult<Promise<void>> =>
-  async (dispatch, getState, { timerGateway }) => {
-    const isStarted = selectIsStarted(getState());
-
-    if (isStarted) {
-      throw new Error('The timer is already running.');
-    }
-
-    const intervalId = timerGateway.resume();
-
-    dispatch(setIntervalId(intervalId));
   };
 
 export const stopTimer =
@@ -55,19 +53,17 @@ export const stopTimer =
   (dispatch, getState, { timerGateway }) => {
     const intervalId = selectIntervalId(getState());
 
-    if (!intervalId) {
-      throw new Error('No timer is started.');
+    if (intervalId) {
+      timerGateway.clear(intervalId);
     }
 
-    timerGateway.stopInterval(intervalId);
     dispatch(stopTimerAction());
   };
 
 export const setDecreasedRemainingTime = (): ThunkResult<void> => (dispatch, getState) => {
-  const isStarted = selectIsStarted(getState());
   const remainingTime = selectRemainingTime(getState());
 
-  if (isStarted && remainingTime > 0) {
+  if (remainingTime && remainingTime > 0) {
     dispatch(decreaseRemainingTime());
   }
 };

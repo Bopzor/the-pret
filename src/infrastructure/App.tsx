@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { StatusBar } from 'expo-status-bar';
@@ -7,12 +7,10 @@ import { Provider } from 'react-redux';
 
 import { createStore } from '../domain/store';
 import { createTea } from '../domain/tea/Tea';
-import { loadTea } from '../domain/tea/use-cases/tea';
-import { addTeaTimer, loadTeaTimer } from '../domain/tea/use-cases/tea-timer';
 import { ImMemoryIdGateway } from '../domain/tests/InMemoryIdGateway';
 import { InMemoryTeaStoreGateway } from '../domain/tests/InMemoryTeaGateway';
 
-import { ExpoNotificationTeaTimeGateway } from './tea/TeaGateways';
+import { ExpoNotificationTeaTimeGateway } from './tea/ExpoNotificationTeaTimeGateway';
 import TeaView from './tea/TeaView';
 import { UITimerGateway } from './tea/UITimerGateway';
 
@@ -30,23 +28,6 @@ const store = createStore({
 });
 
 const App = () => {
-  useEffect(() => {
-    const received = teaTimerGateway.listenForegroundTimer((timerId: string, _teaId: string) => {
-      store.dispatch(addTeaTimer(timerId));
-      store.dispatch(loadTeaTimer());
-    });
-
-    const response = teaTimerGateway.listenBackgroundTimer((timerId: string, teaId: string) => {
-      store.dispatch(addTeaTimer(timerId));
-      store.dispatch(loadTea({ teaId }));
-    });
-
-    return () => {
-      received();
-      response();
-    };
-  }, []);
-
   return (
     <Provider store={store}>
       <View style={styles.container}>

@@ -1,6 +1,6 @@
 import { createTea, Tea } from '../tea/Tea';
-import { TeaStoreGateway, TeaTimerGateway } from '../tea/TeaGateways';
-import { Seconds } from '../types';
+import { TeaStoreGateway } from '../tea/TeaStoreGateway';
+import { TeaTimerGateway, TeaTimerParams, TeaTimerPayload, TeaTimerRegistrationParams } from '../tea/TeaTimerGateway';
 
 export class InMemoryTeaStoreGateway implements TeaStoreGateway {
   private _teas: Tea[] = [];
@@ -23,31 +23,39 @@ export class InMemoryTeaStoreGateway implements TeaStoreGateway {
 }
 
 export class InMemoryTeaTimerGateway implements TeaTimerGateway {
-  timerId: string | null = null;
+  timerId?: string;
+  payload?: TeaTimerPayload;
+  onTimerEnd?: (timerId: string, payload: TeaTimerPayload) => Promise<void>;
 
   async saveTimer(id: string): Promise<void> {
     this.timerId = id;
   }
 
   async loadTimer(): Promise<string | null> {
-    return this.timerId;
+    return this.timerId ?? null;
   }
 
-  async runTimer(_duration: Seconds, _teaId: string): Promise<string> {
+  async runTimer(
+    notification: TeaTimerParams,
+    onTimerEnd: (timerId: string, payload: TeaTimerPayload) => Promise<void>,
+  ): Promise<string> {
     this.timerId = '9';
+    this.payload = notification.payload;
+
+    this.onTimerEnd = onTimerEnd;
 
     return new Promise((res) => res(this.timerId!.toString()));
   }
 
-  async cancelTimer(_timerId: string) {
-    this.timerId = null;
+  async clearTimer(_timerId: string) {
+    this.timerId = undefined;
   }
 
-  listenForegroundTimer(_onReceivedNotification: (timerId: string, teaId: string) => void): () => void {
-    return () => undefined;
-  }
+  async endTimer(): Promise<void> {
+    if (!this.timerId || !this.onTimerEnd || !this.payload) {
+      throw new Error('Missing tea timer initialization');
+    }
 
-  listenBackgroundTimer(_callback: (timerId: string, teaId: string) => void): () => void {
-    return () => undefined;
+    await this.onTimerEnd(this.timerId, this.payload);
   }
 }

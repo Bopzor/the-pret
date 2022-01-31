@@ -4,7 +4,8 @@ import { ThunkAction } from 'redux-thunk';
 
 import { IdGateway } from './IdGateway';
 import teaReducer from './tea/tea.slice';
-import { TeaStoreGateway, TeaTimerGateway } from './tea/TeaGateways';
+import { TeaStoreGateway } from './tea/TeaStoreGateway';
+import { TeaTimerGateway } from './tea/TeaTimerGateway';
 import timerReducer from './timer/timer.slice';
 import { TimerGateway } from './timer/TimerGateway';
 

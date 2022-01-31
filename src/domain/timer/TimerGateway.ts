@@ -1,8 +1,14 @@
 import { Seconds } from '../types';
 
+export type IntervalParams = {
+  duration: Seconds;
+  startTimestamp: number;
+  onTick(): void;
+  onEnd(): void;
+};
+
 export interface TimerGateway {
-  startInterval(decreaseRemainingTime: () => void, interval: Seconds): number;
-  pauseInterval(intervalId: number): void;
-  resume(): number;
-  stopInterval(intervalId: number): void;
+  start(params: IntervalParams): number;
+  pause(intervalId: number): void;
+  clear(intervalId: number): void;
 }

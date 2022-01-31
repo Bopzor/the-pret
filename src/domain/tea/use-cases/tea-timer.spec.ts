@@ -1,5 +1,11 @@
 import { Store } from '../../tests/store';
-import { selectIsPaused, selectIsStarted, selectRemainingTime, startTimer } from '../../timer/timer.slice';
+import {
+  selectIsPaused,
+  selectIsStarted,
+  selectRemainingTime,
+  setRemainingTime,
+  startTimer,
+} from '../../timer/timer.slice';
 import { createTea } from '../Tea';
 import { selectTimerId, setTea, setTimerId } from '../tea.slice';
 
@@ -23,6 +29,17 @@ describe('runTeaTimer', () => {
     expect(store.select(selectIsStarted)).toEqual(true);
 
     expect(store.select(selectTimerId)).toEqual('9');
+  });
+
+  it('sets remaining time at 0 on end', async () => {
+    const tea = createTea();
+    store.teaStoreGateway.teas = [tea];
+    store.dispatch(setTea(tea));
+
+    await store.dispatch(runTeaTimer());
+    await store.teaTimerGateway.endTimer();
+
+    expect(store.select(selectRemainingTime)).toEqual(0);
   });
 });
 
@@ -52,7 +69,9 @@ describe('resumeTeaTimer', () => {
   });
 
   it('resumes the tea timer', async () => {
-    store.dispatch(setTea(createTea()));
+    const tea = createTea();
+    store.dispatch(setTea(tea));
+    store.dispatch(setRemainingTime(tea.time));
 
     await store.dispatch(resumeTeaTimer());
 

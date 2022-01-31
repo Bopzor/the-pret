@@ -2,9 +2,7 @@ import { ThunkResult } from '../../store';
 import { setRemainingTime } from '../../timer/timer.slice';
 import { runTimer } from '../../timer/use-cases';
 import { Tea, TeaData } from '../Tea';
-import { addTea as addTeaAction, editTea as editTeaAction, setTea, setTeas, setTimerId } from '../tea.slice';
-
-import { loadTeaTimer } from './tea-timer';
+import { addTea as addTeaAction, editTea as editTeaAction, selectTimerId, setTea, setTeas } from '../tea.slice';
 
 export const fetchTeas =
   (): ThunkResult<Promise<void>> =>
@@ -25,7 +23,7 @@ export const fetchTea =
       const tea = await teaStoreGateway.getTea(id);
 
       if (!tea) {
-        throw new Error('Tea with id ${id} not found.');
+        throw new Error(`Tea with id ${id} not found.`);
       }
 
       dispatch(setTea(tea));
@@ -37,11 +35,11 @@ export const fetchTea =
 
 export const loadTea =
   ({ teaId }: { teaId: string }): ThunkResult<Promise<void>> =>
-  async (dispatch, _getState) => {
+  async (dispatch, getState) => {
     try {
       await dispatch(fetchTea(teaId));
 
-      const timerId = await dispatch(loadTeaTimer());
+      const timerId = selectTimerId(getState());
 
       if (!timerId) {
         return;
