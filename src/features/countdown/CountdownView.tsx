@@ -2,10 +2,14 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { useAppDispatch, useAppSelector } from '../../reduxAppHooks';
 
-import { startCountdown, stopCountdown } from './countdown';
+import { stopCountdown } from './countdown';
 import { selectCountdownId, selectIsReady, selectIsRunning, selectRemainingTime } from './countdownSlice';
 
-const CountdownView: React.FC = () => {
+type CountdownViewProps = {
+  onStart: () => void;
+};
+
+const CountdownView: React.FC<CountdownViewProps> = ({ onStart }) => {
   const countdownId = useAppSelector(selectCountdownId);
   const remainingTime = useAppSelector(selectRemainingTime);
   const isReady = useAppSelector(selectIsReady);
@@ -17,7 +21,7 @@ const CountdownView: React.FC = () => {
     if (isRunning) {
       dispatch(stopCountdown());
     } else {
-      dispatch(startCountdown(10));
+      onStart();
     }
   };
 

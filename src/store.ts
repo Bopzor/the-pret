@@ -2,14 +2,20 @@ import { AnyAction, configureStore, Selector, ThunkAction } from '@reduxjs/toolk
 
 import { CountdownPort } from './features/countdown/CountdownPort';
 import countdownReducer from './features/countdown/countdownSlice';
+import { DatePort } from './features/DatePort';
+import teasReducer from './features/teas/teasSlice';
+import { TeaStoragePort } from './features/teas/TeaStoragePort';
 
 type Dependencies = {
+  teaStorage: TeaStoragePort;
   countdown: CountdownPort;
+  date: DatePort;
 };
 
 export const createStore = (dependencies: Dependencies) =>
   configureStore({
     reducer: {
+      teas: teasReducer,
       countdown: countdownReducer,
     },
     middleware: (getDefaultMiddleware) =>

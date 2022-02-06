@@ -1,25 +1,24 @@
+import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { StatusBar } from 'expo-status-bar';
 
-import { Provider } from 'react-redux';
-
-import CountdownView from './features/countdown/CountdownView';
-import { UICountdownAdapter } from './features/countdown/UICountdownAdapter';
-import { createStore } from './store';
-
-const store = createStore({
-  countdown: new UICountdownAdapter(),
-});
+import { loadTeas } from './features/teas/teas';
+import TeaView from './features/teas/TeaView';
+import { useAppDispatch } from './reduxAppHooks';
 
 const App = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadTeas());
+  }, []);
+
   return (
-    <Provider store={store}>
-      <View style={styles.container}>
-        <CountdownView />
-        <StatusBar style="auto" />
-      </View>
-    </Provider>
+    <View style={styles.container}>
+      <TeaView id="tea-1" />
+      <StatusBar style="auto" />
+    </View>
   );
 };
 

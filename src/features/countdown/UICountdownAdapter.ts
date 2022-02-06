@@ -8,7 +8,7 @@ export class UICountdownAdapter implements CountdownPort {
   start({ duration, onTick, onEnd }: CountdownParams): CountdownId {
     this.duration = duration;
 
-    const countdownId = setInterval(() => {
+    const countdownId = window.setInterval(() => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (this.duration! > 0) {
         onTick();
