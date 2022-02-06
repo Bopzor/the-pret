@@ -4,7 +4,6 @@ import { Seconds } from '../types';
 import {
   decrementRemainingTime,
   selectCountdownId,
-  selectRemainingTime,
   setCountdownId,
   setIsReady,
   setRemainingTime,
@@ -33,16 +32,6 @@ export const endCountdown = (): AppThunkAction<void> => (dispatch) => {
   dispatch(setIsReady(true));
 };
 
-export const pauseCountdown =
-  (): AppThunkAction<void> =>
-  (dispatch, getState, { countdown }) => {
-    const countdownId = selectCountdownId(getState());
-
-    countdown.stop(countdownId);
-
-    dispatch(setCountdownId(null));
-  };
-
 export const stopCountdown =
   (): AppThunkAction<void> =>
   (dispatch, getState, { countdown }) => {
@@ -53,9 +42,3 @@ export const stopCountdown =
     dispatch(setCountdownId(null));
     dispatch(setRemainingTime(null));
   };
-
-export const resumeCountdown = (): AppThunkAction<void> => (dispatch, getState) => {
-  const remainingTime = selectRemainingTime(getState());
-
-  dispatch(startCountdown(remainingTime));
-};
