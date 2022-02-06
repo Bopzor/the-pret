@@ -42,6 +42,8 @@ const countdownSelector = (state: RootState) => state.countdown;
 export const selectCountdownId = createSelector(countdownSelector, (countdown) => countdown.countdownId);
 export const selectRemainingTime = createSelector(countdownSelector, (countdown) => countdown.remainingTime);
 export const selectIsReady = createSelector(countdownSelector, (countdown) => countdown.isReady);
+export const selectIsRunning = (state: RootState) =>
+  Boolean(selectCountdownId(state) && selectRemainingTime(state) && !selectIsReady(state));
 
 export const { setCountdownId, setRemainingTime, setIsReady, decrementRemainingTime } = countdownSlice.actions;
 

@@ -20,9 +20,9 @@ export const createStore = (dependencies: Dependencies) =>
       }),
   });
 
-export const store = createStore({});
+type Store = ReturnType<typeof createStore>;
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<Store['getState']>;
+export type AppDispatch = Store['dispatch'];
 export type AppThunkAction<Result> = ThunkAction<Result, RootState, Dependencies, AnyAction>;
 export type AppSelector<Result, Params extends unknown[]> = Selector<RootState, Result, Params>;

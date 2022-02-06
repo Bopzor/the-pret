@@ -6,6 +6,7 @@ import {
   selectIsReady,
   selectRemainingTime,
   setCountdownId,
+  setIsReady,
   setRemainingTime,
 } from './countdownSlice';
 
@@ -20,6 +21,14 @@ describe('startCountdown', () => {
     store.dispatch(startCountdown(60));
 
     expect(store.select(selectRemainingTime)).toEqual(60);
+  });
+
+  it('starts a new countdowns', () => {
+    store.dispatch(setIsReady(true));
+
+    store.dispatch(startCountdown(30));
+
+    expect(store.select(selectIsReady)).toBe(false);
   });
 
   it('decrements the countdown by 1 second', () => {

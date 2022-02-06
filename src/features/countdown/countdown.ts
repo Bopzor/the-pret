@@ -12,6 +12,7 @@ import {
 export const startCountdown =
   (duration: Seconds): AppThunkAction<void> =>
   (dispatch, _getState, { countdown }) => {
+    dispatch(setIsReady(false));
     dispatch(setRemainingTime(duration));
 
     const onTick = () => dispatch(decrementRemainingTime());
