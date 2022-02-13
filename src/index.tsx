@@ -6,12 +6,10 @@ import App from './App';
 import { RNAppStateAdapter } from './features/appState/RNAppStateAdapter';
 import { UICountdownAdapter } from './features/countdown/UICountdownAdapter';
 import { DateAdapter } from './features/DateAdapter';
+import { AsyncTeaStorageAdapter } from './features/teas/AsyncTeaStorageAdapter';
 import { createStore } from './store';
-import { createTea } from './tests/factories';
-import { InMemoryTeaStorageAdapter } from './tests/InMemoryTeaStorageAdapter';
 
-const teaStorage = new InMemoryTeaStorageAdapter();
-teaStorage.teas = [createTea()];
+const teaStorage = new AsyncTeaStorageAdapter();
 
 const store = createStore({
   teaStorage,

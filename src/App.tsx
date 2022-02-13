@@ -12,7 +12,8 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadTeas());
+    // TODO: avoid using async await in useEffect
+    (async () => await dispatch(loadTeas()))();
     dispatch(listenAppState());
 
     return () => dispatch(removeAppStateListener());

@@ -3,9 +3,9 @@ import { AppState as RNAppState, AppStateStatus } from 'react-native';
 import { AppStatePort } from './AppStatePort';
 
 export class RNAppStateAdapter implements AppStatePort {
-  listeners: ((state: string) => void)[] = [];
+  listeners: ((state: string) => Promise<void>)[] = [];
 
-  addEventListener(state: AppStateStatus, listener: (state: string) => void): void {
+  addEventListener(state: AppStateStatus, listener: (state: string) => Promise<void>): void {
     RNAppState.addEventListener('change', (nextAppChange: AppStateStatus) => {
       console.log('nextAppChange', nextAppChange);
 

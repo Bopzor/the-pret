@@ -1,23 +1,27 @@
 import { AppThunkAction } from '../../store';
 import { stopCountdown } from '../countdown/countdown';
-import { startTeaCountdown } from '../teas/teas';
-import { selectTeaStartedAtTimestamp } from '../teas/teasSlice';
+import { loadTeas, startTeaCountdown } from '../teas/teas';
+import { selectTeas, selectTeaStartedAtTimestamp } from '../teas/teasSlice';
 
 export const listenAppState =
   (): AppThunkAction<void> =>
   (dispatch, getState, { appState }) => {
-    // TODO: check behavior on app killed
+    appState.addEventListener('active', async () => {
+      const teas = selectTeas(getState());
 
-    // TODO: use routing to get tea Id if any and only if a tea timer is started
-    appState.addEventListener('active', () => {
+      // TODO: is this enough for killed management?
+      if (teas.length === 0) {
+        await dispatch(loadTeas());
+      }
+
+      // TODO: use routing to get tea Id if any and only if a tea timer is started
       const teaStartedTimestamp = selectTeaStartedAtTimestamp(getState(), 'tea-1');
 
       if (teaStartedTimestamp !== null) {
-        dispatch(startTeaCountdown('tea-1'));
+        await dispatch(startTeaCountdown('tea-1'));
       }
     });
-    appState.addEventListener('background', () => {
-      // TODO: check behavior on app killed
+    appState.addEventListener('background', async () => {
       dispatch(stopCountdown());
     });
   };

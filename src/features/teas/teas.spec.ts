@@ -2,7 +2,7 @@ import { createTea } from '../../tests/factories';
 import Store from '../../tests/Store';
 import { selectRemainingTime } from '../countdown/countdownSlice';
 
-import { loadTeas, startTeaCountdown } from './teas';
+import { loadTeas, startTeaCountdown, stopTeaCountdown } from './teas';
 import { selectTeas, selectTeaStartedAtTimestamp, setTeas } from './teasSlice';
 
 describe('loadTeas', () => {
@@ -30,25 +30,44 @@ describe('startTeaCountdown', () => {
   });
 
   it('throws if no tea is found', () => {
-    expect(() => store.dispatch(startTeaCountdown('tea-1'))).toThrowError('Tea tea-1 not found');
+    expect(() => store.dispatch(startTeaCountdown('tea-1'))).rejects.toThrow('Tea tea-1 not found');
   });
 
-  it('starts the tea countdown', () => {
+  it('starts the tea countdown', async () => {
     const tea = createTea();
     store.dispatch(setTeas([tea]));
+    store.teaStorage.teas = [tea];
 
-    store.dispatch(startTeaCountdown(tea.id));
+    await store.dispatch(startTeaCountdown(tea.id));
 
     expect(store.select(selectTeaStartedAtTimestamp, tea.id)).toEqual(0);
+    expect(store.teaStorage.teas[0].startedTimestamp).toEqual(0);
   });
 
-  it('starts the tea countdown with remaining time according to tea started timestamp', () => {
+  it('starts the tea countdown with remaining time according to tea started timestamp', async () => {
     const tea = createTea({ startedTimestamp: 0 });
     store.dispatch(setTeas([tea]));
     store.date.currentNow = 20000;
 
-    store.dispatch(startTeaCountdown(tea.id));
+    await store.dispatch(startTeaCountdown(tea.id));
 
     expect(store.select(selectRemainingTime)).toEqual(40);
+  });
+});
+
+describe('stopTeaCountdown', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = new Store();
+  });
+
+  it('stops the tea countdown', async () => {
+    const tea = createTea({ startedTimestamp: 0 });
+    store.teaStorage.teas = [tea];
+
+    await store.dispatch(stopTeaCountdown(tea.id));
+
+    expect(store.teaStorage.teas[0].startedTimestamp).toBeNull();
   });
 });

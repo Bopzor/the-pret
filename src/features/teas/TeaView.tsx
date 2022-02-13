@@ -10,12 +10,12 @@ const TeaView: React.FC<{ id: string }> = ({ id }) => {
   const dispatch = useAppDispatch();
   const tea = useAppSelector((state) => selectTea(state, id));
 
-  const onStart = () => {
-    dispatch(startTeaCountdown(id));
+  const onStart = async () => {
+    await dispatch(startTeaCountdown(id));
   };
 
-  const onStop = () => {
-    dispatch(stopTeaCountdown(id));
+  const onStop = async () => {
+    await dispatch(stopTeaCountdown(id));
   };
 
   if (!tea) {

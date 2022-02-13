@@ -13,8 +13,8 @@ export const loadTeas =
   };
 
 export const startTeaCountdown =
-  (teaId: string): AppThunkAction<void> =>
-  (dispatch, getState, { date }) => {
+  (teaId: string): AppThunkAction<Promise<void>> =>
+  async (dispatch, getState, { date, teaStorage }) => {
     const tea = selectTea(getState(), teaId);
 
     if (!tea) {
@@ -36,13 +36,16 @@ export const startTeaCountdown =
     dispatch(startCountdown(duration));
 
     if (tea.startedTimestamp === null) {
+      await teaStorage.saveTeaStartedTimestamp(tea.id, now);
       dispatch(setTeaStartedTimestamp({ id: teaId, startedTimestamp: now }));
     }
   };
 
 export const stopTeaCountdown =
-  (id: string): AppThunkAction<void> =>
-  (dispatch) => {
+  (id: string): AppThunkAction<Promise<void>> =>
+  async (dispatch, _getState, { teaStorage }) => {
+    await teaStorage.saveTeaStartedTimestamp(id, null);
+
     dispatch(setTeaStartedTimestamp({ id, startedTimestamp: null }));
     dispatch(stopCountdown());
   };
