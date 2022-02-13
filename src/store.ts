@@ -1,5 +1,6 @@
 import { AnyAction, configureStore, Selector, ThunkAction } from '@reduxjs/toolkit';
 
+import { AppStatePort } from './features/appState/AppStatePort';
 import { CountdownPort } from './features/countdown/CountdownPort';
 import countdownReducer from './features/countdown/countdownSlice';
 import { DatePort } from './features/DatePort';
@@ -10,6 +11,7 @@ type Dependencies = {
   teaStorage: TeaStoragePort;
   countdown: CountdownPort;
   date: DatePort;
+  appState: AppStatePort;
 };
 
 export const createStore = (dependencies: Dependencies) =>

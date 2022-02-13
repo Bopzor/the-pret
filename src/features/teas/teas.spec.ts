@@ -45,7 +45,7 @@ describe('startTeaCountdown', () => {
   it('starts the tea countdown with remaining time according to tea started timestamp', () => {
     const tea = createTea({ startedTimestamp: 0 });
     store.dispatch(setTeas([tea]));
-    store.date.currentNow = 20;
+    store.date.currentNow = 20000;
 
     store.dispatch(startTeaCountdown(tea.id));
 

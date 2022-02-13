@@ -1,5 +1,6 @@
 import { AppThunkAction } from '../../store';
 import { startCountdown, stopCountdown } from '../countdown/countdown';
+import { Seconds } from '../types';
 
 import { selectTea, setTeas, setTeaStartedTimestamp } from './teasSlice';
 
@@ -27,9 +28,21 @@ export const startTeaCountdown =
     let duration = tea.duration;
 
     if (tea.startedTimestamp !== null) {
-      duration = duration - now - tea.startedTimestamp;
+      const elapsedSeconds: Seconds = Math.ceil((now - tea.startedTimestamp) / 1000);
+
+      duration = duration - elapsedSeconds;
     }
 
     dispatch(startCountdown(duration));
-    dispatch(setTeaStartedTimestamp({ id: teaId, startedTimestamp: now }));
+
+    if (tea.startedTimestamp === null) {
+      dispatch(setTeaStartedTimestamp({ id: teaId, startedTimestamp: now }));
+    }
+  };
+
+export const stopTeaCountdown =
+  (id: string): AppThunkAction<void> =>
+  (dispatch) => {
+    dispatch(setTeaStartedTimestamp({ id, startedTimestamp: null }));
+    dispatch(stopCountdown());
   };
