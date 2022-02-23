@@ -5,5 +5,7 @@ export const createTea = (overrides?: Partial<Tea>): Tea => ({
   name: 'tea 1',
   duration: 60,
   startedTimestamp: null,
+  notificationId: null,
+  isReady: false,
   ...overrides,
 });

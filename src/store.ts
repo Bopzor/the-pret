@@ -4,6 +4,7 @@ import { AppStatePort } from './features/appState/AppStatePort';
 import { CountdownPort } from './features/countdown/CountdownPort';
 import countdownReducer from './features/countdown/countdownSlice';
 import { DatePort } from './features/DatePort';
+import { NotificationsPort } from './features/notifications/NotificationsPort';
 import teasReducer from './features/teas/teasSlice';
 import { TeaStoragePort } from './features/teas/TeaStoragePort';
 
@@ -12,6 +13,7 @@ type Dependencies = {
   countdown: CountdownPort;
   date: DatePort;
   appState: AppStatePort;
+  notifications: NotificationsPort;
 };
 
 export const createStore = (dependencies: Dependencies) =>

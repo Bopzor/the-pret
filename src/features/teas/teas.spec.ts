@@ -2,8 +2,14 @@ import { createTea } from '../../tests/factories';
 import Store from '../../tests/Store';
 import { selectRemainingTime } from '../countdown/countdownSlice';
 
-import { loadTeas, startTeaCountdown, stopTeaCountdown } from './teas';
-import { selectTeas, selectTeaStartedAtTimestamp, setTeas } from './teasSlice';
+import { endTeaCountdown, loadTeas, startTeaCountdown, stopTeaCountdown } from './teas';
+import {
+  selectTeaIsReady,
+  selectTeaNotificationId,
+  selectTeas,
+  selectTeaStartedAtTimestamp,
+  setTeas,
+} from './teasSlice';
 
 describe('loadTeas', () => {
   let store: Store;
@@ -41,7 +47,10 @@ describe('startTeaCountdown', () => {
     await store.dispatch(startTeaCountdown(tea.id));
 
     expect(store.select(selectTeaStartedAtTimestamp, tea.id)).toEqual(0);
+    expect(store.select(selectTeaNotificationId, tea.id)).toEqual(`${tea.id}-${tea.duration}`);
+
     expect(store.teaStorage.teas[0].startedTimestamp).toEqual(0);
+    expect(store.teaStorage.teas[0].notificationId).toEqual(`${tea.id}-${tea.duration}`);
   });
 
   it('starts the tea countdown with remaining time according to tea started timestamp', async () => {
@@ -69,5 +78,6 @@ describe('stopTeaCountdown', () => {
     await store.dispatch(stopTeaCountdown(tea.id));
 
     expect(store.teaStorage.teas[0].startedTimestamp).toBeNull();
+    expect(store.teaStorage.teas[0].notificationId).toBeNull();
   });
 });

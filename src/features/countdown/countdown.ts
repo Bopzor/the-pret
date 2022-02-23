@@ -38,6 +38,7 @@ export const stopCountdown =
   (dispatch, getState, { countdown }) => {
     const countdownId = selectCountdownId(getState());
 
+    // TODO: handle countdownId is null
     countdown.stop(countdownId);
 
     dispatch(setCountdownId(null));

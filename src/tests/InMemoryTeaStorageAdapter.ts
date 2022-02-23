@@ -18,4 +18,15 @@ export class InMemoryTeaStorageAdapter implements TeaStoragePort {
       ...this.teas.slice(idx + 1),
     ];
   }
+
+  async saveTeaNotificationId(teaId: string, notificationId: string | null): Promise<void> {
+    const idx = this.teas.findIndex((tea) => tea.id === teaId);
+
+    // prettier-ignore
+    this.teas = [
+      ...this.teas.slice(0, idx),
+      { ...this.teas[idx], notificationId },
+      ...this.teas.slice(idx + 1),
+    ];
+  }
 }

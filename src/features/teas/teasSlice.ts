@@ -8,6 +8,8 @@ export type Tea = {
   name: string;
   duration: Seconds;
   startedTimestamp: number | null;
+  notificationId: string | null;
+  isReady: boolean;
 };
 
 const teasAdapter = createEntityAdapter<Tea>();
@@ -23,6 +25,15 @@ const teasSlice = createSlice({
     ) => {
       teasAdapter.updateOne(state, { id, changes: { startedTimestamp } });
     },
+    setTeaNotificationId: (
+      state,
+      { payload: { notificationId, id } }: PayloadAction<Pick<Tea, 'id' | 'notificationId'>>,
+    ) => {
+      teasAdapter.updateOne(state, { id, changes: { notificationId } });
+    },
+    setTeaIsReady: (state, { payload: { isReady, id } }: PayloadAction<Pick<Tea, 'id' | 'isReady'>>) => {
+      teasAdapter.updateOne(state, { id, changes: { isReady } });
+    },
   },
 });
 
@@ -31,7 +42,9 @@ const teasSelectors = teasAdapter.getSelectors<RootState>((state) => state.teas)
 export const selectTeas = teasSelectors.selectAll;
 export const selectTea = teasSelectors.selectById;
 export const selectTeaStartedAtTimestamp = createSelector(teasSelectors.selectById, (tea) => tea?.startedTimestamp);
+export const selectTeaNotificationId = createSelector(teasSelectors.selectById, (tea) => tea?.notificationId);
+export const selectTeaIsReady = createSelector(teasSelectors.selectById, (tea) => tea?.isReady);
 
-export const { setTeas, setTeaStartedTimestamp } = teasSlice.actions;
+export const { setTeas, setTeaStartedTimestamp, setTeaNotificationId, setTeaIsReady } = teasSlice.actions;
 
 export default teasSlice.reducer;
