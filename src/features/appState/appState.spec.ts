@@ -12,34 +12,34 @@ describe('listenAppState', () => {
     store = new Store();
   });
 
-  it("starts tea's countdown on app is active", () => {
+  it("starts tea's countdown on app is active", async () => {
     store.dispatch(setTeas([createTea({ startedTimestamp: 0 })]));
 
     store.dispatch(listenAppState());
 
-    store.appState.onActive();
+    await store.appState.onActive();
 
     expect(store.select(selectIsRunning)).toBe(true);
   });
 
-  it('does not start any countdown if no tea is started', () => {
+  it('does not start any countdown if no tea is started', async () => {
     store.dispatch(setTeas([createTea({ startedTimestamp: null })]));
 
     store.dispatch(listenAppState());
 
-    store.appState.onActive();
+    await store.appState.onActive();
 
     expect(store.select(selectIsRunning)).toBe(false);
   });
 
-  it('stops countdown on app is in background', () => {
+  it('stops countdown on app is in background', async () => {
     const tea = createTea({ startedTimestamp: 0 });
     store.dispatch(setTeas([tea]));
     store.dispatch(setCountdownId(1));
 
     store.dispatch(listenAppState());
 
-    store.appState.onBackground();
+    await store.appState.onBackground();
 
     expect(store.select(selectCountdownId)).toBeNull();
     expect(store.select(selectTeaStartedAtTimestamp, tea.id)).toEqual(0);

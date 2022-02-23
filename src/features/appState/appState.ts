@@ -3,10 +3,12 @@ import { stopCountdown } from '../countdown/countdown';
 import { loadTeas, startTeaCountdown } from '../teas/teas';
 import { selectTeas, selectTeaStartedAtTimestamp } from '../teas/teasSlice';
 
+import { AppState } from './AppStatePort';
+
 export const listenAppState =
   (): AppThunkAction<void> =>
   (dispatch, getState, { appState }) => {
-    appState.addEventListener('active', async () => {
+    appState.addEventListener(AppState.active, async () => {
       const teas = selectTeas(getState());
 
       // TODO: is this enough for killed management?
@@ -21,7 +23,8 @@ export const listenAppState =
         await dispatch(startTeaCountdown('tea-1'));
       }
     });
-    appState.addEventListener('background', async () => {
+
+    appState.addEventListener(AppState.background, async () => {
       dispatch(stopCountdown());
     });
   };

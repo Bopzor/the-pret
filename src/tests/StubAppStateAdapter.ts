@@ -1,15 +1,15 @@
-import { AppStatePort } from '../features/appState/AppStatePort';
+import { AppState, AppStatePort } from '../features/appState/AppStatePort';
 
 export class StubAppStateAdapter implements AppStatePort {
-  onActiveListener: ((state: string) => void)[] = [];
-  onBackgroundListener: ((state: string) => void)[] = [];
+  onActiveListener: ((state: AppState.active) => void)[] = [];
+  onBackgroundListener: ((state: AppState.background) => void)[] = [];
 
-  addEventListener(state: 'active' | 'background', listener: (state: string) => void): void {
-    if (state === 'active') {
+  addEventListener(state: AppState, listener: (state: AppState) => void): void {
+    if (state === AppState.active) {
       this.onActiveListener.push(listener);
     }
 
-    if (state === 'background') {
+    if (state === AppState.background) {
       this.onBackgroundListener.push(listener);
     }
   }
@@ -19,15 +19,15 @@ export class StubAppStateAdapter implements AppStatePort {
     this.onBackgroundListener = [];
   }
 
-  onActive() {
+  async onActive() {
     for (const listener of this.onActiveListener) {
-      listener('active');
+      await listener(AppState.active);
     }
   }
 
-  onBackground() {
+  async onBackground() {
     for (const listener of this.onBackgroundListener) {
-      listener('background');
+      await listener(AppState.background);
     }
   }
 }

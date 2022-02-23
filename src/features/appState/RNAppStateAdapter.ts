@@ -1,20 +1,24 @@
 import { AppState as RNAppState, AppStateStatus } from 'react-native';
 
-import { AppStatePort } from './AppStatePort';
+import { AppState, AppStatePort } from './AppStatePort';
 
 export class RNAppStateAdapter implements AppStatePort {
-  listeners: ((state: string) => Promise<void>)[] = [];
+  listeners: ((state: AppStateStatus) => void)[] = [];
 
-  addEventListener(state: AppStateStatus, listener: (state: string) => Promise<void>): void {
+  addEventListener(state: AppState, listener: (state: AppState) => void): void {
     RNAppState.addEventListener('change', (nextAppChange: AppStateStatus) => {
-      console.log('nextAppChange', nextAppChange);
+      const nextAppState = nextAppChange === 'active' ? AppState.active : AppState.background;
 
-      if (nextAppChange === state) {
-        listener(state);
+      if (nextAppState === state) {
+        listener(nextAppState);
       }
-    });
 
-    this.listeners.push(listener);
+      this.listeners.push((state: AppStateStatus) => {
+        const appState = state === 'active' ? AppState.active : AppState.background;
+
+        listener(appState);
+      });
+    });
   }
 
   removeAllEventListener(): void {
