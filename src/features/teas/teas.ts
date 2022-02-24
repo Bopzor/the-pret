@@ -3,7 +3,14 @@ import { startCountdown, stopCountdown } from '../countdown/countdown';
 import { scheduleNotification } from '../notifications/notifications';
 import { Seconds } from '../types';
 
-import { selectTea, setTeaNotificationId, setTeas, setTeaStartedTimestamp } from './teasSlice';
+import {
+  selectTea,
+  selectTeaIsReady,
+  selectTeaNotificationId,
+  setTeaNotificationId,
+  setTeas,
+  setTeaStartedTimestamp,
+} from './teasSlice';
 
 export const loadTeas =
   (): AppThunkAction<Promise<void>> =>
@@ -48,7 +55,18 @@ export const startTeaCountdown =
 
 export const stopTeaCountdown =
   (id: string): AppThunkAction<Promise<void>> =>
-  async (dispatch, _getState, { teaStorage }) => {
+  async (dispatch, getState, { teaStorage, notifications }) => {
+    const teaNotificationId = selectTeaNotificationId(getState(), id);
+    const teaIsReady = selectTeaIsReady(getState(), id);
+
+    if (teaNotificationId) {
+      if (!teaIsReady) {
+        notifications.cancelScheduledNotification(teaNotificationId);
+      } else {
+        notifications.dismissNotification(teaNotificationId);
+      }
+    }
+
     await teaStorage.saveTeaStartedTimestamp(id, null);
     await teaStorage.saveTeaNotificationId(id, null);
 

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { createTea as fakeCreateTea } from '../../tests/factories';
 
-import { createTea } from './creatTea';
+import { JSONToTea } from './JSONToTea';
 import { Tea } from './teasSlice';
 import { TeaStoragePort } from './TeaStoragePort';
 
@@ -15,14 +15,15 @@ export class AsyncTeaStorageAdapter implements TeaStoragePort {
 
       console.log('loaded tea', teas);
 
+      // await AsyncStorage.removeItem('teas-list');
+
       if (!teas) {
         // TODO: this is temporary. Must load from `.json` if exist
-        console.log('load from inMemory');
         await AsyncStorage.setItem('tea-list', JSON.stringify([]));
         return tempTeas;
       }
 
-      return JSON.parse(teas).map(createTea);
+      return JSON.parse(teas).map(JSONToTea);
     } catch (error) {
       console.error(error);
       throw new Error('error from load teas');
@@ -31,6 +32,10 @@ export class AsyncTeaStorageAdapter implements TeaStoragePort {
 
   async saveTeaStartedTimestamp(teaId: string, startedTimestamp: number | null): Promise<void> {
     await this.updateTea(teaId, { startedTimestamp });
+  }
+
+  async saveTeaNotificationId(teaId: string, notificationId: string | null): Promise<void> {
+    await this.updateTea(teaId, { notificationId });
   }
 
   private async updateTea(teaId: string, changes: Partial<Tea>): Promise<void> {

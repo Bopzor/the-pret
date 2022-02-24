@@ -2,7 +2,7 @@ import { createTea } from '../../tests/factories';
 import Store from '../../tests/Store';
 import { selectTeaIsReady, selectTeaNotificationId, setTeas } from '../teas/teasSlice';
 
-import { listenNotifications, scheduleNotification } from './notifications';
+import { listenNotifications, removeNotificationsListener, scheduleNotification } from './notifications';
 
 describe('scheduleNotification', () => {
   let store: Store;
@@ -38,5 +38,25 @@ describe('listenNotifications', () => {
     store.notifications.onReceived(tea.id);
 
     expect(store.select(selectTeaIsReady, tea.id)).toBe(true);
+  });
+});
+
+describe('removeNotificationsListener', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = new Store();
+  });
+
+  it('removes listener', () => {
+    const tea = createTea({ startedTimestamp: 0, duration: 0 });
+    store.dispatch(setTeas([tea]));
+    store.dispatch(listenNotifications());
+
+    store.dispatch(removeNotificationsListener());
+
+    store.notifications.onReceived(tea.id);
+
+    expect(store.select(selectTeaIsReady, tea.id)).toBe(false);
   });
 });

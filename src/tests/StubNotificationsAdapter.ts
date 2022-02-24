@@ -21,6 +21,10 @@ export class StubNotificationsAdapter implements NotificationsPort {
     }
   }
 
+  removeAllListeners(): void {
+    this.receivedListener = [];
+  }
+
   onReceived(teaId: string) {
     for (const listener of this.receivedListener) {
       listener(teaId);

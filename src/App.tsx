@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import { listenAppState, removeAppStateListener } from './features/appState/appState';
+import { listenNotifications, removeNotificationsListener } from './features/notifications/notifications';
 import { loadTeas } from './features/teas/teas';
 import TeaView from './features/teas/TeaView';
 import { useAppDispatch } from './reduxAppHooks';
@@ -18,6 +19,13 @@ const App = () => {
 
     return () => dispatch(removeAppStateListener());
   }, []);
+
+  useEffect(() => {
+    dispatch(listenNotifications());
+
+    () => dispatch(removeNotificationsListener());
+  }),
+    [];
 
   return (
     <View style={styles.container}>

@@ -5,14 +5,22 @@ const isTea = (data: unknown): data is Tea => {
     return false;
   }
 
-  if (!('id' in data) || !('duration' in data) || !('name' in data) || !('startedTimestamp' in data)) {
+  if (
+    !('id' in data) ||
+    !('duration' in data) ||
+    !('name' in data) ||
+    !('brand' in data) ||
+    !('temperature' in data) ||
+    !('startedTimestamp' in data) ||
+    !('notificationId' in data)
+  ) {
     return false;
   }
 
   return true;
 };
 
-export const createTea = (data: unknown): Tea => {
+export const JSONToTea = (data: unknown): Tea => {
   if (!isTea(data)) {
     throw Error(`Could not create a tea from given data ${data}`);
   }
@@ -20,7 +28,10 @@ export const createTea = (data: unknown): Tea => {
   return {
     id: data.id,
     name: data.name,
+    brand: data.brand,
+    temperature: data.temperature,
     duration: data.duration,
+    notificationId: data.notificationId,
     startedTimestamp: data.duration,
   };
 };

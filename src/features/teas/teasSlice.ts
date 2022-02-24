@@ -1,15 +1,19 @@
 import { createEntityAdapter, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../../store';
+import { formatRemainingTime } from '../../utils';
+import { selectRemainingTimeDisplay } from '../countdown/countdownSlice';
 import { Seconds } from '../types';
 
 export type Tea = {
   id: string;
   name: string;
+  brand: string;
+  temperature: number;
   duration: Seconds;
   startedTimestamp: number | null;
   notificationId: string | null;
-  isReady: boolean;
+  isReady?: boolean;
 };
 
 const teasAdapter = createEntityAdapter<Tea>();

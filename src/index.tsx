@@ -6,6 +6,7 @@ import App from './App';
 import { RNAppStateAdapter } from './features/appState/RNAppStateAdapter';
 import { UICountdownAdapter } from './features/countdown/UICountdownAdapter';
 import { DateAdapter } from './features/DateAdapter';
+import { ExpoNotificationsAdapter } from './features/notifications/ExpoNotificationsAdapter.1';
 import { AsyncTeaStorageAdapter } from './features/teas/AsyncTeaStorageAdapter';
 import { createStore } from './store';
 
@@ -16,6 +17,7 @@ const store = createStore({
   countdown: new UICountdownAdapter(),
   date: new DateAdapter(),
   appState: new RNAppStateAdapter(),
+  notifications: new ExpoNotificationsAdapter(),
 });
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
