@@ -39,6 +39,11 @@ export const startTeaCountdown =
       const elapsedSeconds: Seconds = Math.ceil((now - tea.startedTimestamp) / 1000);
 
       duration = duration - elapsedSeconds;
+
+      if (duration <= 0) {
+        dispatch(stopTeaCountdown(tea.id));
+        return;
+      }
     }
 
     if (tea.notificationId === null) {

@@ -19,7 +19,8 @@ export class AsyncTeaStorageAdapter implements TeaStoragePort {
 
       if (!teas) {
         // TODO: this is temporary. Must load from `.json` if exist
-        await AsyncStorage.setItem('tea-list', JSON.stringify([]));
+        await AsyncStorage.setItem('tea-list', JSON.stringify([tempTeas]));
+
         return tempTeas;
       }
 

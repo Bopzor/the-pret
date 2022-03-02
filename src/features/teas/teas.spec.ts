@@ -2,14 +2,8 @@ import { createTea } from '../../tests/factories';
 import Store from '../../tests/Store';
 import { selectRemainingTime } from '../countdown/countdownSlice';
 
-import { endTeaCountdown, loadTeas, startTeaCountdown, stopTeaCountdown } from './teas';
-import {
-  selectTeaIsReady,
-  selectTeaNotificationId,
-  selectTeas,
-  selectTeaStartedAtTimestamp,
-  setTeas,
-} from './teasSlice';
+import { loadTeas, startTeaCountdown, stopTeaCountdown } from './teas';
+import { selectTeaNotificationId, selectTeas, selectTeaStartedAtTimestamp, setTeas } from './teasSlice';
 
 describe('loadTeas', () => {
   let store: Store;
@@ -61,6 +55,16 @@ describe('startTeaCountdown', () => {
     await store.dispatch(startTeaCountdown(tea.id));
 
     expect(store.select(selectRemainingTime)).toEqual(40);
+  });
+
+  it('stops the tea countdown if remaining time if over', async () => {
+    const tea = createTea({ startedTimestamp: 0 });
+    store.dispatch(setTeas([tea]));
+    store.date.currentNow = 120000;
+
+    await store.dispatch(startTeaCountdown(tea.id));
+
+    expect(store.select(selectRemainingTime)).toEqual(null);
   });
 });
 

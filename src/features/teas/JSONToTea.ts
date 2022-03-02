@@ -32,6 +32,6 @@ export const JSONToTea = (data: unknown): Tea => {
     temperature: data.temperature,
     duration: data.duration,
     notificationId: data.notificationId,
-    startedTimestamp: data.duration,
+    startedTimestamp: data.startedTimestamp,
   };
 };
