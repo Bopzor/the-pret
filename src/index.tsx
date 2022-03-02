@@ -1,5 +1,6 @@
 import { registerRootComponent } from 'expo';
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
 import App from './App';
@@ -20,11 +21,10 @@ const store = createStore({
   notifications: new ExpoNotificationsAdapter(),
 });
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
 registerRootComponent(() => (
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <SafeAreaProvider>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </SafeAreaProvider>
 ));

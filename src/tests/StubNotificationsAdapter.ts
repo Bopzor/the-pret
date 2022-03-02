@@ -25,6 +25,18 @@ export class StubNotificationsAdapter implements NotificationsPort {
     this.receivedListener = [];
   }
 
+  async cancelScheduledNotification(_notificationId: string): Promise<void> {
+    this.scheduled = undefined;
+
+    this.removeAllListeners();
+  }
+
+  async dismissNotification(_notificationId: string): Promise<void> {
+    this.scheduled = undefined;
+
+    this.removeAllListeners();
+  }
+
   onReceived(teaId: string) {
     for (const listener of this.receivedListener) {
       listener(teaId);

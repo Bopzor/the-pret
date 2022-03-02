@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { listenAppState, removeAppStateListener } from './features/appState/appState';
 import { listenNotifications, removeNotificationsListener } from './features/notifications/notifications';
@@ -10,6 +14,13 @@ import TeaView from './features/teas/TeaView';
 import { useAppDispatch } from './reduxAppHooks';
 
 const App = () => {
+  const [fontsLoaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins/Poppins-Regular.ttf'),
+    'Poppins-Italic': require('../assets/fonts/Poppins/Poppins-LightItalic.ttf'),
+    'Poppins-Bold': require('../assets/fonts/Poppins/Poppins-Bold.ttf'),
+    CourierPrime: require('../assets/fonts/CourierPrime/CourierPrime-Regular.ttf'),
+  });
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -24,14 +35,17 @@ const App = () => {
     dispatch(listenNotifications());
 
     () => dispatch(removeNotificationsListener());
-  }),
-    [];
+  }, []);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TeaView id="tea-1" />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 };
 

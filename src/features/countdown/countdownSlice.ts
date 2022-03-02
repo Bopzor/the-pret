@@ -1,6 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../../store';
+import { formatRemainingTime } from '../../utils';
 import { CountdownId, Seconds } from '../types';
 
 type CountdownState = {
@@ -44,6 +45,13 @@ export const selectRemainingTime = createSelector(countdownSelector, (countdown)
 export const selectIsReady = createSelector(countdownSelector, (countdown) => countdown.isReady);
 export const selectIsRunning = (state: RootState) =>
   Boolean(selectCountdownId(state) && selectRemainingTime(state) && !selectIsReady(state));
+export const selectRemainingTimeDisplay = createSelector(selectRemainingTime, (remainingTime) => {
+  if (remainingTime === null) {
+    return;
+  }
+
+  return formatRemainingTime(remainingTime);
+});
 
 export const { setCountdownId, setRemainingTime, setIsReady, decrementRemainingTime } = countdownSlice.actions;
 

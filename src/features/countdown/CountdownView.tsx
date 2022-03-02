@@ -1,18 +1,23 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useAppSelector } from '../../reduxAppHooks';
+import { CircleProgress, Text } from '../../ui/';
+import theme from '../../ui/theme';
+import { selectTeaRemainingTimeDisplay } from '../teas/teasSlice';
 
-import { selectCountdownId, selectIsReady, selectIsRunning, selectRemainingTime } from './countdownSlice';
+import { selectIsRunning } from './countdownSlice';
+import { PlayIcon, StopIcon } from './SvgIcons';
 
 type CountdownViewProps = {
   onStart: () => void;
   onStop: () => void;
 };
 
+const radius = 150;
+
 const CountdownView: React.FC<CountdownViewProps> = ({ onStart, onStop }) => {
-  const countdownId = useAppSelector(selectCountdownId);
-  const remainingTime = useAppSelector(selectRemainingTime);
-  const isReady = useAppSelector(selectIsReady);
+  // TODO: get tea id from route
+  const remainingTeaTimeDisplay = useAppSelector((state) => selectTeaRemainingTimeDisplay(state, 'tea-1'));
   const isRunning = useAppSelector(selectIsRunning);
 
   const handleOnPress = () => {
@@ -24,34 +29,28 @@ const CountdownView: React.FC<CountdownViewProps> = ({ onStart, onStop }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Text>
-          <Text style={styles.label}>CountdownId:</Text> {String(countdownId)}
-        </Text>
-        <Text>
-          <Text style={styles.label}>RemainingTime:</Text> {String(remainingTime)}
-        </Text>
-        <Text>
-          <Text style={styles.label}>isReady:</Text> {String(isReady)}
-        </Text>
-      </View>
-
-      <Button onPress={handleOnPress} title={isRunning ? 'stop' : 'start'} />
+    <View>
+      <CircleProgress radius={radius} strokeWidth={25}>
+        <View style={styles.countdownIndication}>
+          <Text style={styles.remainingTime}>{remainingTeaTimeDisplay}</Text>
+          <TouchableOpacity onPress={handleOnPress}>
+            {isRunning ? <StopIcon width={42} height={42} /> : <PlayIcon width={42} height={42} />}
+          </TouchableOpacity>
+        </View>
+      </CircleProgress>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
+  countdownIndication: {
+    alignItems: 'center',
   },
-  textContainer: {
-    marginBottom: 10,
-  },
-  label: {
-    fontWeight: '700',
+  remainingTime: {
+    fontFamily: theme.fontFamily.monospace,
+    fontSize: radius / 2,
+    textAlign: 'center',
+    marginBottom: 30,
   },
 });
-
 export default CountdownView;
