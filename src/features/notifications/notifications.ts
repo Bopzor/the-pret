@@ -9,11 +9,6 @@ export const scheduleNotification =
   async (dispatch, getState, { notifications, teaStorage }) => {
     const tea = selectTea(getState(), teaId);
 
-    //TODO: can be factorized
-    if (!tea) {
-      throw new Error(`Tea ${teaId} not found`);
-    }
-
     const notificationDetails: NotificationDetails = {
       title: 'Thé Prêt ?',
       body: `${tea.name} est prêt !`,

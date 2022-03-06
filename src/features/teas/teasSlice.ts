@@ -44,12 +44,22 @@ const teasSlice = createSlice({
 const teasSelectors = teasAdapter.getSelectors<RootState>((state) => state.teas);
 
 export const selectTeas = teasSelectors.selectAll;
-export const selectTea = teasSelectors.selectById;
-export const selectTeaStartedAtTimestamp = createSelector(teasSelectors.selectById, (tea) => tea?.startedTimestamp);
-export const selectTeaNotificationId = createSelector(teasSelectors.selectById, (tea) => tea?.notificationId);
-export const selectTeaIsReady = createSelector(teasSelectors.selectById, (tea) => tea?.isReady);
-export const selectTeaTemperatureCelsius = createSelector(teasSelectors.selectById, (tea) => ({
-  value: tea?.temperature,
+export const selectTeaUnsafe = teasSelectors.selectById;
+export const selectTea = (state: RootState, id: string) => {
+  const tea = selectTeaUnsafe(state, id);
+
+  if (!tea) {
+    throw new Error(`Tea ${id} not found`);
+  }
+
+  return tea;
+};
+export const selectTeaStartedAtTimestamp = createSelector(selectTea, (tea) => tea.startedTimestamp);
+export const selectTeaNotificationId = createSelector(selectTea, (tea) => tea.notificationId);
+export const selectTeaIsReady = createSelector(selectTea, (tea) => tea.isReady);
+export const selectTeaDuration = createSelector(selectTea, (tea) => tea.duration);
+export const selectTeaTemperatureCelsius = createSelector(selectTea, (tea) => ({
+  value: tea.temperature,
   unit: '°C',
 }));
 export const selectTeaRemainingTimeDisplay = (state: RootState, teaId: string): string => {
@@ -57,11 +67,6 @@ export const selectTeaRemainingTimeDisplay = (state: RootState, teaId: string): 
 
   if (!remainingTimeDisplay) {
     const tea = selectTea(state, teaId);
-
-    //TODO: can be factorized
-    if (!tea) {
-      throw new Error(`Tea ${teaId} not found`);
-    }
 
     return formatRemainingTime(tea.duration);
   }

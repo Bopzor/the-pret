@@ -25,10 +25,6 @@ export const startTeaCountdown =
   async (dispatch, getState, { date, teaStorage }) => {
     const tea = selectTea(getState(), teaId);
 
-    if (!tea) {
-      throw new Error(`Tea ${teaId} not found`);
-    }
-
     // TODO: handle when no countdownId
     dispatch(stopCountdown());
 

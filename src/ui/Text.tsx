@@ -1,11 +1,9 @@
-import { StyleSheet, Text as RNText } from 'react-native';
-
-import { Style } from 'tailwind-rn/dist';
+import { StyleProp, StyleSheet, Text as RNText, TextStyle } from 'react-native';
 
 import theme from './theme';
 
 type TextProps = {
-  style?: Style;
+  style?: StyleProp<TextStyle>;
 };
 
 export const Text: React.FC<TextProps> = ({ style = [], children }) => {

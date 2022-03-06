@@ -5,14 +5,13 @@ const theme = {
     large: 64,
   },
   fontFamily: {
-    default: 'Poppins',
-    monospace: 'CourierPrime',
+    default: 'Lato',
   },
   fontStyle: {
-    italic: 'Poppins-Italic',
+    italic: 'Lato-Italic',
   },
   fontWeight: {
-    bold: 'Poppins-Bold',
+    bold: 'Lato-Bold',
   },
   palette: {
     text: '#000000',

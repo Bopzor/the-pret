@@ -7,6 +7,7 @@ type CircleProgressProps = {
   radius?: number;
   percentage?: number;
   strokeWidth?: number;
+  baseColor?: string;
   color?: string;
 };
 
@@ -14,7 +15,8 @@ export const CircleProgress: React.FC<CircleProgressProps> = ({
   radius = 40,
   percentage = 75,
   strokeWidth = 10,
-  color = 'green',
+  baseColor = 'green',
+  color = 'darkgreen',
   children,
 }) => {
   const [contentHeight, setContentHeight] = useState(0);
@@ -31,15 +33,7 @@ export const CircleProgress: React.FC<CircleProgressProps> = ({
     <View>
       <Svg width={radius * 2} height={radius * 2} viewBox={`0 0 ${halfCircle * 2} ${halfCircle * 2}`}>
         <G rotation="-90" origin={`${halfCircle}, ${halfCircle}`}>
-          <Circle
-            cx="50%"
-            cy="50%"
-            r={radius}
-            fill="transparent"
-            stroke={color}
-            strokeWidth={strokeWidth}
-            strokeOpacity={0.2}
-          />
+          <Circle cx="50%" cy="50%" r={radius} fill="transparent" stroke={baseColor} strokeWidth={strokeWidth} />
 
           <Circle
             cx="50%"
@@ -55,7 +49,10 @@ export const CircleProgress: React.FC<CircleProgressProps> = ({
         </G>
       </Svg>
 
-      <View style={{ ...StyleSheet.absoluteFillObject, top: contentHeight / 2 }} onLayout={handleOnLayout}>
+      <View
+        style={{ ...StyleSheet.absoluteFillObject, top: contentHeight / 2, width: radius * 2 }}
+        onLayout={handleOnLayout}
+      >
         {children}
       </View>
     </View>

@@ -1,6 +1,5 @@
 import { registerRootComponent } from 'expo';
 
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
 import App from './App';
@@ -22,9 +21,7 @@ const store = createStore({
 });
 
 registerRootComponent(() => (
-  <SafeAreaProvider>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </SafeAreaProvider>
+  <Provider store={store}>
+    <App />
+  </Provider>
 ));

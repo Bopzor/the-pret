@@ -78,6 +78,7 @@ describe('stopTeaCountdown', () => {
   it('stops the tea countdown', async () => {
     const tea = createTea({ startedTimestamp: 0, notificationId: 'notification-1' });
     store.teaStorage.teas = [tea];
+    store.dispatch(setTeas([tea]));
 
     await store.dispatch(stopTeaCountdown(tea.id));
 

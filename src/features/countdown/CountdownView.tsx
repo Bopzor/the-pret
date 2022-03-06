@@ -1,11 +1,11 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useAppSelector } from '../../reduxAppHooks';
-import { CircleProgress, Text } from '../../ui/';
-import theme from '../../ui/theme';
-import { selectTeaRemainingTimeDisplay } from '../teas/teasSlice';
+import { CircleProgress, Text } from 'src/ui/';
 
-import { selectIsRunning } from './countdownSlice';
+import { useAppSelector } from '../../reduxAppHooks';
+import { selectTeaDuration, selectTeaRemainingTimeDisplay } from '../teas/teasSlice';
+
+import { selectIsRunning, selectRemainingTime } from './countdownSlice';
 import { PlayIcon, StopIcon } from './SvgIcons';
 
 type CountdownViewProps = {
@@ -18,7 +18,11 @@ const radius = 150;
 const CountdownView: React.FC<CountdownViewProps> = ({ onStart, onStop }) => {
   // TODO: get tea id from route
   const remainingTeaTimeDisplay = useAppSelector((state) => selectTeaRemainingTimeDisplay(state, 'tea-1'));
+  const remainingTime = useAppSelector((state) => selectRemainingTime(state));
+  const duration = useAppSelector((state) => selectTeaDuration(state, 'tea-1'));
   const isRunning = useAppSelector(selectIsRunning);
+
+  const percentage = 100 - ((remainingTime ? remainingTime : duration) * 100) / duration;
 
   const handleOnPress = () => {
     if (isRunning) {
@@ -30,7 +34,7 @@ const CountdownView: React.FC<CountdownViewProps> = ({ onStart, onStop }) => {
 
   return (
     <View>
-      <CircleProgress radius={radius} strokeWidth={25}>
+      <CircleProgress radius={radius} strokeWidth={20} percentage={percentage}>
         <View style={styles.countdownIndication}>
           <Text style={styles.remainingTime}>{remainingTeaTimeDisplay}</Text>
           <TouchableOpacity onPress={handleOnPress}>
@@ -47,10 +51,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   remainingTime: {
-    fontFamily: theme.fontFamily.monospace,
-    fontSize: radius / 2,
+    fontSize: radius / 1.5,
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
 });
 export default CountdownView;
